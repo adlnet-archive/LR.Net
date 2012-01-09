@@ -1,0 +1,8 @@
+C:\Development\adlsvn.adlnet.gov\LearningRegistry\LearningRegistrySubmitExample\obj\x86\Release\ResolveAssemblyReference.cache
+C:\Development\adlsvn.adlnet.gov\LearningRegistry\LearningRegistrySubmitExample\bin\Release\LearningRegistrySubmitExample.exe.config
+C:\Development\adlsvn.adlnet.gov\LearningRegistry\LearningRegistrySubmitExample\bin\Release\LearningRegistrySubmitExample.exe
+C:\Development\adlsvn.adlnet.gov\LearningRegistry\LearningRegistrySubmitExample\bin\Release\LearningRegistrySubmitExample.pdb
+C:\Development\adlsvn.adlnet.gov\LearningRegistry\LearningRegistrySubmitExample\bin\Release\LearningRegistry.dll
+C:\Development\adlsvn.adlnet.gov\LearningRegistry\LearningRegistrySubmitExample\bin\Release\LearningRegistry.pdb
+C:\Development\adlsvn.adlnet.gov\LearningRegistry\LearningRegistrySubmitExample\obj\x86\Release\LearningRegistrySubmitExample.exe
+C:\Development\adlsvn.adlnet.gov\LearningRegistry\LearningRegistrySubmitExample\obj\x86\Release\LearningRegistrySubmitExample.pdb
