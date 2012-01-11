@@ -41,16 +41,9 @@ namespace LearningRegistry
 		public string error;
 		public string responseDate;
 		public HarvestResultRequestData request;
-		public string resumption_token;
 		
 		[ScriptIgnore]
 		internal string Action { get; set; }
-		
-		[ScriptIgnore]
-		public bool HasMoreRecords
-		{
-			get { return !String.IsNullOrEmpty(resumption_token); }
-		}
 		
 		public override ResumableResult GetNextPage()
 		{

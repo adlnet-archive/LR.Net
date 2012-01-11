@@ -16,11 +16,7 @@ namespace LearningRegistry
 	
 	public class LRClient
 	{
-		public static class Routes
-		{
-			public readonly static string Publish = "publish";
-			public readonly static string Obtain = "obtain";
-		}
+		
 		private Uri _baseUri;
 		public Uri BaseUri
 		{ 
@@ -60,7 +56,7 @@ namespace LearningRegistry
 		public PublishResponse Publish(lr_Envelope docs)
 		{
 			byte[] data = _encoder.GetBytes(docs.Serialize());
-			HttpWebRequest request = LRUtils.CreateHttpRequest(BaseUri,Routes.Publish);
+			HttpWebRequest request = LRUtils.CreateHttpRequest(BaseUri,LRUtils.Routes.Publish);
 			request.Method = "POST";
 			request.ContentType = "application/json";
 			request.ContentLength = data.GetLength(0);
@@ -75,31 +71,32 @@ namespace LearningRegistry
 			return responseObject;
 		}
 		
-		/*public lr_document ObtainDocByDocID(string docId)
+		public lr_document ObtainDocByID(string docId)
 		{
-			WebClient wc = new WebClient();
+			Dictionary<string, string> args = new Dictionary<string, string>();
+			args["by_doc_ID"] = "true";
+			
+			var result = LRUtils.Obtain(_baseUri, docId, args);
+			
+			if(result.documents.Count < 1)
+				throw new Exception("Document with id "+docId+" does not exist.");
+			
+			return result.documents[0].document[0];
+		}
+		
+		public ObtainResult ObtainDocsByResourceLocator(string locator, bool ids_only = false)
+		{
 			Dictionary<string, string> args = new Dictionary<string, string>();
 			
-		}
-		
-		public List<lr_document> ObtainDocsByResourceLocator(string locator)
-		{	
-		}
-		public List<string> ObtainIdsByResourceLocator(string locator)
-		{
-		}
-		private lr_Envelope obtain(Dictionary<string,string> args)
-		{
+			if(ids_only)
+			{
+				args["ids_only"] = "true";
+				args["by_doc_ID"] = "true"; //we only want doc ids
+			}
 			
+			return LRUtils.Obtain(_baseUri, locator, args);
 		}
-		/*
-		public List<ResourceDataDocument>  Harvest()
-		{
-		}
-		
-		public List<ResourceDataDocument> Slice()
-		{
-		}*/
+
 	}
 }
 

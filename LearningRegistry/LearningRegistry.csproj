@@ -58,6 +58,7 @@
     <Compile Include="Taxonomies.cs" />
     <Compile Include="Replicator.cs" />
     <Compile Include="ResumableResult.cs" />
+    <Compile Include="ObtainResult.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
