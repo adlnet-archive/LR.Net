@@ -16,7 +16,7 @@ namespace LearningRegistry
 	
 	public class LRClient
 	{
-		static class Routes
+		public static class Routes
 		{
 			public readonly static string Publish = "publish";
 			public readonly static string Obtain = "obtain";
@@ -45,7 +45,7 @@ namespace LearningRegistry
 		
 		public LRClient()
 		{
-			_serializer = new JavaScriptSerializer();
+			_serializer = LRUtils.GetSerializer();
 			_encoder = new UTF8Encoding();
 			_harvester = new Harvester();
 		}
@@ -55,7 +55,7 @@ namespace LearningRegistry
 			_baseUri = baseUri;
 			_serializer = new JavaScriptSerializer();
 			_encoder = new UTF8Encoding();
-			_harvester = new Harvester(baseUri, _serializer);
+			_harvester = new Harvester(baseUri);
 		}
 		
 		public PublishResponse Publish(lr_Envelope docs)
@@ -77,10 +77,11 @@ namespace LearningRegistry
 			return responseObject;
 		}
 		
-		public lr_document ObtainDocByDocID(string docId)
+		/*public lr_document ObtainDocByDocID(string docId)
 		{
 			WebClient wc = new WebClient();
-			return new lr_document(); 
+			Dictionary<string, string> args = new Dictionary<string, string>();
+			
 		}
 		
 		public List<lr_document> ObtainDocsByResourceLocator(string locator)

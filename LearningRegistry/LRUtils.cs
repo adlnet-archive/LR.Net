@@ -1,12 +1,15 @@
 using System;
 using System.Net;
-using System.Reflection;
 using System.Collections.Generic;
+using System.Web.Script.Serialization;
 
 namespace LearningRegistry
 {
 	internal static class LRUtils
 	{
+		private static JavaScriptSerializer _serializer = new JavaScriptSerializer();
+		public static JavaScriptSerializer GetSerializer() { return _serializer; }
+		
 		public const string ISO_8061_FORMAT = "yyyy-MM-ddThh:mm:ssZ";
 		
 		public static HttpWebRequest CreateHttpRequest(string baseUri, string action)
@@ -27,24 +30,7 @@ namespace LearningRegistry
 			return qs;
 		}
 		
-		public static void AssertVocabTerm(string s, Type t)
-		{
-			FieldInfo[] infos = t.GetFields(BindingFlags.Public | BindingFlags.Static);
-			foreach(FieldInfo info in infos)
-			{
-				try 
-				{
-					string vocabVal = (string)info.GetRawConstantValue();
-					if(!String.IsNullOrEmpty(vocabVal) && vocabVal.Equals(s))
-						return;
-				}
-				catch
-				{
-					continue;
-				}
-			}
-			throw new Exception(s+" is not in the vocabulary '"+t.Name+"'");
-		}
+		
 	}
 	
 	

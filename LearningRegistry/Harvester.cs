@@ -38,16 +38,10 @@ namespace LearningRegistry
 			_serializer = new JavaScriptSerializer();
 		}
 		
-		public Harvester (string baseUri)
+		internal Harvester (string baseUri)
 		{
 			this.BaseUri = baseUri;
 			_serializer = new JavaScriptSerializer();
-		}
-		
-		internal Harvester (string baseUri, JavaScriptSerializer serializer)
-		{
-			this.BaseUri = baseUri;
-			_serializer = serializer;
 		}
 		
 		public HarvestRecord GetRecordByDocId(string docId)
