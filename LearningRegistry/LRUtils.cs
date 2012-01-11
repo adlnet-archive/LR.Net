@@ -12,9 +12,9 @@ namespace LearningRegistry
 		
 		public const string ISO_8061_FORMAT = "yyyy-MM-ddThh:mm:ssZ";
 		
-		public static HttpWebRequest CreateHttpRequest(string baseUri, string action)
+		public static HttpWebRequest CreateHttpRequest(Uri baseUri, string action)
 		{
-			return (HttpWebRequest)WebRequest.Create(System.IO.Path.Combine(baseUri, action));
+			return (HttpWebRequest)WebRequest.Create(new Uri(baseUri, action));
 		}
 		
 		public static string BuildQueryString(Dictionary<string,string> args)

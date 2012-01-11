@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningRegistry", "LearningRegistry.csproj", "{CA7D59DE-9118-4922-A30E-E022FC5EFD32}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningRegistrySubmitExample", "..\LearningRegistrySubmitExample\LearningRegistrySubmitExample.csproj", "{ECF78C9E-2EAC-4892-B790-32CAD7FE7DB7}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LRPublishExample", "LRPublishExample\LRPublishExample.csproj", "{8583C922-8437-4AD1-9A9F-988B50B871F1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LRTest", "LRTest\LRTest.csproj", "{5E892917-C700-4D2E-B3D5-1E3186BBC57F}"
@@ -56,16 +54,6 @@ Global
 		{CA7D59DE-9118-4922-A30E-E022FC5EFD32}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{CA7D59DE-9118-4922-A30E-E022FC5EFD32}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{CA7D59DE-9118-4922-A30E-E022FC5EFD32}.Release|x86.ActiveCfg = Release|Any CPU
-		{ECF78C9E-2EAC-4892-B790-32CAD7FE7DB7}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{ECF78C9E-2EAC-4892-B790-32CAD7FE7DB7}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{ECF78C9E-2EAC-4892-B790-32CAD7FE7DB7}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{ECF78C9E-2EAC-4892-B790-32CAD7FE7DB7}.Debug|x86.ActiveCfg = Debug|x86
-		{ECF78C9E-2EAC-4892-B790-32CAD7FE7DB7}.Debug|x86.Build.0 = Debug|x86
-		{ECF78C9E-2EAC-4892-B790-32CAD7FE7DB7}.Release|Any CPU.ActiveCfg = Release|x86
-		{ECF78C9E-2EAC-4892-B790-32CAD7FE7DB7}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{ECF78C9E-2EAC-4892-B790-32CAD7FE7DB7}.Release|Mixed Platforms.Build.0 = Release|x86
-		{ECF78C9E-2EAC-4892-B790-32CAD7FE7DB7}.Release|x86.ActiveCfg = Release|x86
-		{ECF78C9E-2EAC-4892-B790-32CAD7FE7DB7}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = LRPublishExample\LRPublishExample.csproj

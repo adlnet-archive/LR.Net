@@ -21,8 +21,8 @@ namespace LearningRegistry
 			public readonly static string Publish = "publish";
 			public readonly static string Obtain = "obtain";
 		}
-		private string _baseUri;
-		public string BaseUri
+		private Uri _baseUri;
+		public Uri BaseUri
 		{ 
 			get
 			{
@@ -52,10 +52,10 @@ namespace LearningRegistry
 		
 		public LRClient(string baseUri)
 		{
-			_baseUri = baseUri;
+			_baseUri = new Uri(baseUri);
 			_serializer = new JavaScriptSerializer();
 			_encoder = new UTF8Encoding();
-			_harvester = new Harvester(baseUri);
+			_harvester = new Harvester(_baseUri);
 		}
 		
 		public PublishResponse Publish(lr_Envelope docs)

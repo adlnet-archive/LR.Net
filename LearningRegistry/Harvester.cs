@@ -17,8 +17,8 @@ namespace LearningRegistry
 			public const string ListMetadataFormats = "listmetadataformats";
 		}
 		
-		private string _baseUri;
-		public string BaseUri
+		private Uri _baseUri;
+		public Uri BaseUri
 		{
 			get
 			{
@@ -26,7 +26,7 @@ namespace LearningRegistry
 			}
 			set
 			{
-				_baseUri = System.IO.Path.Combine(value, "harvest");
+				_baseUri = new Uri(value, "harvest");
 			}
 		}
 		
@@ -34,14 +34,14 @@ namespace LearningRegistry
 		
 		public Harvester()
 		{
-			this._baseUri = "http://localhost";
-			_serializer = new JavaScriptSerializer();
+			this._baseUri = new Uri("http://localhost");
+			_serializer = LRUtils.GetSerializer();
 		}
 		
-		internal Harvester (string baseUri)
+		internal Harvester (Uri baseUri)
 		{
 			this.BaseUri = baseUri;
-			_serializer = new JavaScriptSerializer();
+			_serializer = LRUtils.GetSerializer();
 		}
 		
 		public HarvestRecord GetRecordByDocId(string docId)
@@ -101,7 +101,7 @@ namespace LearningRegistry
 		
 		internal HarvestResult Harvest(string action, Dictionary<string, string> args)
 		{
-			string url = System.IO.Path.Combine(_baseUri, action);
+			string url = new Uri(_baseUri, action).AbsolutePath;
 			url += LRUtils.BuildQueryString(args);
 			
 			WebClient wc = new WebClient();
