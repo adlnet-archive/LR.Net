@@ -50,6 +50,9 @@ namespace LearningRegistry
 		internal Dictionary<string, string> Args { get; set; }
 		
 		[ScriptIgnore]
+		internal Uri BaseUri { get; set; }
+		
+		[ScriptIgnore]
 		internal Harvester Harvester;
 		
 		[ScriptIgnore]
@@ -64,7 +67,7 @@ namespace LearningRegistry
 				throw new System.IndexOutOfRangeException("No resumption token present");
 			
 			Args["resumption_token"] = resumption_token;
-			return Harvester.Harvest(this.Action, this.Args);
+			return LRUtils.Harvest(BaseUri, this.Action, this.Args);
 		}
 	}
 	

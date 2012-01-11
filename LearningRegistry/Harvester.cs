@@ -9,7 +9,7 @@ namespace LearningRegistry
 {
 	public class Harvester
 	{
-		static class HarvesterActions
+		internal static class HarvesterActions
 		{
 			public const string GetRecord = "getrecord";
 			public const string ListRecords = "listrecords";
@@ -18,30 +18,15 @@ namespace LearningRegistry
 		}
 		
 		private Uri _baseUri;
-		public Uri BaseUri
-		{
-			get
-			{
-				return _baseUri;
-			}
-			set
-			{
-				_baseUri = new Uri(value, "harvest");
-			}
-		}
-		
-		private JavaScriptSerializer _serializer;
 		
 		public Harvester()
 		{
 			this._baseUri = new Uri("http://localhost");
-			_serializer = LRUtils.GetSerializer();
 		}
 		
 		internal Harvester (Uri baseUri)
 		{
-			this.BaseUri = baseUri;
-			_serializer = LRUtils.GetSerializer();
+			this._baseUri = baseUri;
 		}
 		
 		public HarvestRecord GetRecordByDocId(string docId)
@@ -56,7 +41,7 @@ namespace LearningRegistry
 		
 		public ListRecordsHarvestResult ListRecords()
 		{
-			return (ListRecordsHarvestResult) this.Harvest(HarvesterActions.ListRecords, null);
+			return (ListRecordsHarvestResult) LRUtils.Harvest(_baseUri, HarvesterActions.ListRecords, null);
 		}
 		
 		public ListRecordsHarvestResult ListRecordsFrom(DateTime date)
@@ -76,7 +61,7 @@ namespace LearningRegistry
 		
 		public ListIdentifiersHarvestResult ListIdentifiers()
 		{
-			return (ListIdentifiersHarvestResult) this.Harvest(HarvesterActions.ListIdentifiers, null);
+			return (ListIdentifiersHarvestResult) LRUtils.Harvest(_baseUri, HarvesterActions.ListIdentifiers, null);
 		}
 		
 		public ListIdentifiersHarvestResult ListIdentifiersFrom(DateTime date)
@@ -96,59 +81,26 @@ namespace LearningRegistry
 		
 		public ListMetadataFormatsHarvestResult ListMetadataFormats()
 		{
-			return (ListMetadataFormatsHarvestResult) this.Harvest(HarvesterActions.ListMetadataFormats, null);
+			return (ListMetadataFormatsHarvestResult) LRUtils.Harvest(_baseUri, HarvesterActions.ListMetadataFormats, null);
 		}
 		
-		internal HarvestResult Harvest(string action, Dictionary<string, string> args)
-		{
-			string url = new Uri(_baseUri, action).AbsolutePath;
-			url += LRUtils.BuildQueryString(args);
-			
-			WebClient wc = new WebClient();
-			string jsonData = wc.DownloadString(url);
-			HarvestResult results = new HarvestResult();
-			
-			switch (action)
-			{
-				case HarvesterActions.GetRecord:
-					results = _serializer.Deserialize<GetRecordHarvestResult>(jsonData);
-					break;
-				case HarvesterActions.ListRecords:
-					results = _serializer.Deserialize<ListRecordsHarvestResult>(jsonData);
-					break;
-				case HarvesterActions.ListIdentifiers:
-					results = _serializer.Deserialize<ListIdentifiersHarvestResult>(jsonData);
-					break;
-				case HarvesterActions.ListMetadataFormats:
-					results = _serializer.Deserialize<ListMetadataFormatsHarvestResult>(jsonData);
-					break;
-				default:
-					throw new System.ArgumentException("Invalid harvester action: " + action);
-			}
-			
-			if(!results.OK)
-				throw new WebException("Error while calling getRecord: "+results.error, WebExceptionStatus.UnknownError);
-			
-			results.Action = action;
-			results.Args = args;
-			results.Harvester = this;
-			return results;
-		}
+		
 		
 		private GetRecordHarvestResult getRecord(string requestId, bool byDocId = false)
 		{
+			Console.WriteLine(_baseUri.AbsoluteUri);
 			var args = new Dictionary<string,string>();
 			args["request_ID"] = requestId;
 			if(byDocId)
 				args["by_doc_ID"] = true.ToString();
 			
-			var result = (GetRecordHarvestResult) Harvest(HarvesterActions.GetRecord, args);
+			var result = (GetRecordHarvestResult) LRUtils.Harvest(_baseUri, HarvesterActions.GetRecord, args);
 			return result;
 		}
 		
 		private HarvestResult harvestFromDateBoundary(string action, string boundaryType, DateTime date)
 		{
-			return this.Harvest(action,
+			return LRUtils.Harvest(_baseUri, action,
 			                 	new Dictionary<string, string>() {
 									{ boundaryType, date.ToString(LRUtils.ISO_8061_FORMAT) }
 							 	});
@@ -158,7 +110,7 @@ namespace LearningRegistry
 			var args = new Dictionary<string, string>();
 			args["from"] = fromDate.ToString(LRUtils.ISO_8061_FORMAT);
 			args["until"] = untilDate.ToString(LRUtils.ISO_8061_FORMAT);
-			return this.Harvest(action, args);
+			return LRUtils.Harvest(_baseUri, action, args);
 		}
 	}
 }

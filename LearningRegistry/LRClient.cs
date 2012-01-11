@@ -31,7 +31,6 @@ namespace LearningRegistry
 			set 
 			{
 				_baseUri = value;
-				_harvester.BaseUri = value;
 			}
 		}
 		
@@ -72,7 +71,6 @@ namespace LearningRegistry
 			byte[] responseData = new byte[response.ContentLength];
 			using (Stream dataStream = response.GetResponseStream())
 				dataStream.Read(responseData, 0, responseData.Length);
-			Console.Write(_encoder.GetString(responseData));
 			var responseObject = _serializer.Deserialize<PublishResponse>(_encoder.GetString(responseData));
 			return responseObject;
 		}
