@@ -57,6 +57,7 @@
     <Compile Include="LRUtils.cs" />
     <Compile Include="Taxonomies.cs" />
     <Compile Include="Replicator.cs" />
+    <Compile Include="ResumableResult.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -35,7 +35,7 @@ namespace LearningRegistry
 		public bool by_resource_ID;
 		public string HTTP_request;
 	}
-	public class HarvestResult
+	public class HarvestResult : ResumableResult
 	{	
 		public Boolean OK;
 		public string error;
@@ -47,27 +47,18 @@ namespace LearningRegistry
 		internal string Action { get; set; }
 		
 		[ScriptIgnore]
-		internal Dictionary<string, string> Args { get; set; }
-		
-		[ScriptIgnore]
-		internal Uri BaseUri { get; set; }
-		
-		[ScriptIgnore]
-		internal Harvester Harvester;
-		
-		[ScriptIgnore]
 		public bool HasMoreRecords
 		{
 			get { return !String.IsNullOrEmpty(resumption_token); }
 		}
 		
-		public HarvestResult GetNextPage()
+		public override ResumableResult GetNextPage()
 		{
 			if(!this.HasMoreRecords)
 				throw new System.IndexOutOfRangeException("No resumption token present");
 			
 			Args["resumption_token"] = resumption_token;
-			return LRUtils.Harvest(BaseUri, this.Action, this.Args);
+			return LRUtils.Harvest(this.BaseUri, this.Action, this.Args);
 		}
 	}
 	
