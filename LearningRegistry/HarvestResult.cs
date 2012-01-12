@@ -45,14 +45,9 @@ namespace LearningRegistry
 		[ScriptIgnore]
 		internal string Action { get; set; }
 		
-		public override ResumableResult GetNextPage()
+		protected override ResumableResult getPage()
 		{
-			if(!this.HasMoreRecords)
-				throw new System.IndexOutOfRangeException("No resumption token present");
-
-            Dictionary<string, object> args = new Dictionary<string, object>();
-			args["resumption_token"] = resumption_token;
-			return LRUtils.Harvest(this.BaseUri, this.Action, args, this.HttpUsername, this.HttpPassword);
+			return LRUtils.Harvest(this.BaseUri, this.Action, _Args, this.HttpUsername, this.HttpPassword);
 		}
 	}
 	

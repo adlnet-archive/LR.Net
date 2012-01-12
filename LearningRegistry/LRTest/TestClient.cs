@@ -14,7 +14,7 @@ namespace LRTest
 		[SetUp]
 		public void SetUpTest()
 		{
-			_client = new LRClient("http://10.100.30.60", "lrlocal", "password");
+			_client = new LRClient("http://alpha.learningregistry.org");
 		}
 		
 		[Test()]

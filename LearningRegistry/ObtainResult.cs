@@ -20,14 +20,9 @@ namespace LearningRegistry
 			return documents.Select( x => x.doc_ID ).ToList<string>();
 		}
 		
-		public override ResumableResult GetNextPage ()
+		protected override ResumableResult getPage ()
 		{
-			if(!this.HasMoreRecords)
-				throw new System.IndexOutOfRangeException("No resumption token present");
-
-            Dictionary<string, object> args = new Dictionary<string, object>();
-			args["resumption_token"] = resumption_token;
-			return LRUtils.Obtain(BaseUri, new List<string>(), args, HttpUsername, HttpPassword);
+			return LRUtils.Obtain(BaseUri, new List<string>(), _Args, HttpUsername, HttpPassword);
 		}
 	}
 	public class ObtainRecord

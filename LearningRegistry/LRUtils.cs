@@ -77,6 +77,8 @@ namespace LearningRegistry
 			string jsonData = getDataFromUri(baseUri, Routes.Obtain, args, username, password);
 			ObtainResult result = _serializer.Deserialize<ObtainResult>(jsonData);
 			result.BaseUri = baseUri;
+            result.HttpUsername = username;
+            result.HttpPassword = password;
 			return result;
 		}
 
@@ -112,6 +114,19 @@ namespace LearningRegistry
             results.HttpPassword = password;
 			return results;
 		}
+
+        internal static SliceResult Slice(Uri baseUri, Dictionary<string, object> args)
+        {
+            UriBuilder urib = new UriBuilder(baseUri);
+            urib.Path = "slice";
+            urib.Query = BuildQueryString(args);
+
+            string jsonData = new WebClient().DownloadString(urib.Uri);
+
+            var result = _serializer.Deserialize<SliceResult>(jsonData);
+            result.BaseUri = baseUri;
+            return result;
+        }
 		
 		internal static string BuildQueryString(Dictionary<string,object> args)
 		{
@@ -119,7 +134,7 @@ namespace LearningRegistry
 			if(args != null && args.Count > 0)
 			{
 				foreach (var entry in args)
-					qs += String.Format("{0}={1}&", entry.Key, entry.Value);
+					qs += String.Format("{0}={1}&", entry.Key, entry.Value.ToString());
 				qs = qs.TrimEnd('&');
 			}
 			return qs;
