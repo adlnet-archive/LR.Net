@@ -56,7 +56,7 @@ namespace LearningRegistry
                     responseData = reader.ReadToEnd();   
                 }
             }
-
+            _serializer.MaxJsonLength = responseData.Length;
             return responseData;
 		}
 
