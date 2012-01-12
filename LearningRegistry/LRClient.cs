@@ -29,7 +29,10 @@ namespace LearningRegistry
 				_baseUri = value;
 			}
 		}
-		
+
+        public string Username { get; set; }
+        public string Password { get; set; }
+
 		private JavaScriptSerializer _serializer;
 		private UTF8Encoding _encoder;
 		private Harvester _harvester;
@@ -41,42 +44,44 @@ namespace LearningRegistry
 		public LRClient()
 		{
 			_serializer = LRUtils.GetSerializer();
-			_encoder = new UTF8Encoding();
+            _encoder = LRUtils.GetEncoder();
 			_harvester = new Harvester();
 		}
 		
 		public LRClient(string baseUri)
 		{
 			_baseUri = new Uri(baseUri);
-			_serializer = new JavaScriptSerializer();
-			_encoder = new UTF8Encoding();
+            _serializer = LRUtils.GetSerializer();
+            _encoder = LRUtils.GetEncoder();
 			_harvester = new Harvester(_baseUri);
+            Username = "";
+            Password = "";
 		}
-		
-		public PublishResponse Publish(lr_Envelope docs)
-		{
-			byte[] data = _encoder.GetBytes(docs.Serialize());
-			HttpWebRequest request = LRUtils.CreateHttpRequest(BaseUri,LRUtils.Routes.Publish);
-			request.Method = "POST";
-			request.ContentType = "application/json";
-			request.ContentLength = data.GetLength(0);
-			using (Stream dataStream = request.GetRequestStream())
-				dataStream.Write(data, 0, data.Length);
-			
-			HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-			byte[] responseData = new byte[response.ContentLength];
-			using (Stream dataStream = response.GetResponseStream())
-				dataStream.Read(responseData, 0, responseData.Length);
-			var responseObject = _serializer.Deserialize<PublishResponse>(_encoder.GetString(responseData));
-			return responseObject;
-		}
+
+        public LRClient(string baseUri, string username, string password)
+        {
+            _baseUri = new Uri(baseUri);
+            _serializer = LRUtils.GetSerializer();
+            _encoder = LRUtils.GetEncoder();
+            _harvester = new Harvester(_baseUri);
+            Username = username;
+            Password = password;
+        }
+
+        public PublishResponse Publish(lr_Envelope docs)
+        {
+            string rawData = LRUtils.HttpPostRequest(_baseUri, LRUtils.Routes.Publish,
+                                                     docs.Serialize(), "application/json", 
+                                                     this.Username, this.Password);
+            return _serializer.Deserialize<PublishResponse>(rawData);
+        }
 		
 		public lr_document ObtainDocByID(string docId)
 		{
-			Dictionary<string, string> args = new Dictionary<string, string>();
-			args["by_doc_ID"] = "true";
+			Dictionary<string, object> args = new Dictionary<string, object>();
+			args["by_doc_ID"] = true;
 			
-			var result = LRUtils.Obtain(_baseUri, docId, args);
+			var result = LRUtils.Obtain(_baseUri, docId, args, this.Username, this.Password);
 			
 			if(result.documents.Count < 1)
 				throw new Exception("Document with id "+docId+" does not exist.");
@@ -86,7 +91,7 @@ namespace LearningRegistry
 		
 		public ObtainResult ObtainDocsByResourceLocator(string locator, bool ids_only = false)
 		{
-			Dictionary<string, string> args = new Dictionary<string, string>();
+            Dictionary<string, object> args = new Dictionary<string, object>();
 			
 			if(ids_only)
 			{

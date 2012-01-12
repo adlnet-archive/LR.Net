@@ -10,9 +10,6 @@ namespace LearningRegistry
 	{
 		public List<ObtainRecord> documents;
 		
-		[ScriptIgnore]
-		internal string ResourceId { get; set; }
-		
 		public List<lr_document> GetDocuments()
 		{
 			return documents.Select( x => x.document[0] ).ToList<lr_document>();
@@ -27,9 +24,10 @@ namespace LearningRegistry
 		{
 			if(!this.HasMoreRecords)
 				throw new System.IndexOutOfRangeException("No resumption token present");
-			
-			Args["resumption_token"] = resumption_token;
-			return LRUtils.Obtain(BaseUri, ResourceId, Args);
+
+            Dictionary<string, object> args = new Dictionary<string, object>();
+			args["resumption_token"] = resumption_token;
+			return LRUtils.Obtain(BaseUri, new List<string>(), args, HttpUsername, HttpPassword);
 		}
 	}
 	public class ObtainRecord

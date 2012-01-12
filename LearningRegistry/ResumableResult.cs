@@ -9,9 +9,12 @@ namespace LearningRegistry
 		
 		[ScriptIgnore]
 		internal Uri BaseUri { get; set; }
-		
-		[ScriptIgnore]
-		internal System.Collections.Generic.Dictionary<string, string> Args { get; set; }
+
+        [ScriptIgnore]
+        internal string HttpUsername { get; set; }
+
+        [ScriptIgnore]
+        internal string HttpPassword { get; set; }
 		
 		[ScriptIgnore]
 		public bool HasMoreRecords

@@ -89,7 +89,7 @@ namespace LearningRegistry
 		private GetRecordHarvestResult getRecord(string requestId, bool byDocId = false)
 		{
 			Console.WriteLine(_baseUri.AbsoluteUri);
-			var args = new Dictionary<string,string>();
+			var args = new Dictionary<string,object>();
 			args["request_ID"] = requestId;
 			if(byDocId)
 				args["by_doc_ID"] = true.ToString();
@@ -101,13 +101,13 @@ namespace LearningRegistry
 		private HarvestResult harvestFromDateBoundary(string action, string boundaryType, DateTime date)
 		{
 			return LRUtils.Harvest(_baseUri, action,
-			                 	new Dictionary<string, string>() {
+			                 	new Dictionary<string, object>() {
 									{ boundaryType, date.ToString(LRUtils.ISO_8061_FORMAT) }
 							 	});
 		}
 		private HarvestResult harvestFromDateRange(string action, DateTime fromDate, DateTime untilDate)
 		{
-			var args = new Dictionary<string, string>();
+			var args = new Dictionary<string, object>();
 			args["from"] = fromDate.ToString(LRUtils.ISO_8061_FORMAT);
 			args["until"] = untilDate.ToString(LRUtils.ISO_8061_FORMAT);
 			return LRUtils.Harvest(_baseUri, action, args);

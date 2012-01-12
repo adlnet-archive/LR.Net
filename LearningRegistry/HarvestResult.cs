@@ -49,9 +49,10 @@ namespace LearningRegistry
 		{
 			if(!this.HasMoreRecords)
 				throw new System.IndexOutOfRangeException("No resumption token present");
-			
-			Args["resumption_token"] = resumption_token;
-			return LRUtils.Harvest(this.BaseUri, this.Action, this.Args);
+
+            Dictionary<string, object> args = new Dictionary<string, object>();
+			args["resumption_token"] = resumption_token;
+			return LRUtils.Harvest(this.BaseUri, this.Action, args, this.HttpUsername, this.HttpPassword);
 		}
 	}
 	
