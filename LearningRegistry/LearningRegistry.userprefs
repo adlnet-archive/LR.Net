@@ -1,6 +1,51 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workbench ActiveDocument="LRTest/TestClient.cs">
+    <Files>
+      <File FileName="LRClient.cs" Line="95" Column="5" />
+      <File FileName="LRUtils.cs" Line="32" Column="17" />
+      <File FileName="Harvester.cs" Line="29" Column="11" />
+      <File FileName="LRPublishExample/Main.cs" Line="93" Column="48" />
+      <File FileName="HarvestResult.cs" Line="51" Column="78" />
+      <File FileName="ResumableResult.cs" Line="16" Column="3" />
+      <File FileName="ObtainResult.cs" Line="32" Column="53" />
+      <File FileName="LRTest/TestClient.cs" Line="60" Column="4" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="LearningRegistry" expanded="True" />
+          <Node name="LRPublishExample" expanded="True" />
+          <Node name="LRTest" expanded="True">
+            <Node name="TestClient.cs" selected="True" />
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="ClassPad">
+        <State expanded="True" selected="True" />
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State>
+          <Value>res.document_results</Value>
+          <Value>info.Name</Value>
+          <Value>info.GetValue(this)</Value>
+          <Value>info.GetValue(doc)</Value>
+        </State>
+      </Pad>
+      <Pad Id="MonoDevelop.NUnit.TestPad">
+        <State expanded="True">
+          <Node name="LRTest" expanded="True">
+            <Node name="LRTest" expanded="True">
+              <Node name="TestClient" expanded="True">
+                <Node name="TestObtainByResourceLocator" selected="True" />
+              </Node>
+              <Node name="TestHarvest" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
