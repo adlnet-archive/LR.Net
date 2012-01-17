@@ -30,4 +30,4 @@ in a future release.
 - Slice
 
 ## Usage 
-Please see the [wiki](wiki) for examples of how to publish and consume data.
+Please see the [wiki](LR.Net/wiki) for examples of how to publish and consume data.
