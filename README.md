@@ -28,6 +28,6 @@ in a future release.
 
 ### Planned Support
 - Slice
-- 
+
 ## Usage 
 Please see the [wiki](wiki) for examples of how to publish and consume data.
