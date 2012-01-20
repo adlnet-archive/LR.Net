@@ -1,6 +1,41 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workbench ActiveDocument="PublishGUI\MainWindow.cs">
+    <Files>
+      <File FileName="PublishGUI\Main.cs" Line="1" Column="1" />
+      <File FileName="PublishGUI\MainWindow.cs" Line="73" Column="5" />
+      <File FileName="ResourceDataDescriptionDocument.cs" Line="649" Column="25" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="LearningRegistry" expanded="True">
+            <Node name="References" expanded="True" />
+            <Node name="Properties" expanded="True" />
+          </Node>
+          <Node name="LRTest" expanded="True" />
+          <Node name="PublishGUI" expanded="True">
+            <Node name="References" expanded="True" />
+            <Node name="UserInterface" expanded="True" />
+            <Node name="MainWindow.cs" selected="True" />
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="ClassPad">
+        <State expanded="True" selected="True">
+          <Node name="ConsoleApplication1" expanded="True" />
+          <Node name="LearningRegistry" expanded="True" />
+          <Node name="LRTest" expanded="True" />
+        </State>
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State />
+      </Pad>
+      <Pad Id="MonoDevelop.NUnit.TestPad">
+        <State expanded="True" selected="True" />
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

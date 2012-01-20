@@ -520,10 +520,8 @@ namespace LearningRegistry
             public lr_TOS()
             {
                 submission_TOS = "http://www.learningregistry.org/tos/cc0/v0-5/";
-                submission_attribution = "";
             }
         }
-		
 		
         [DataContract]
         public class lr_document : lr_base
@@ -562,6 +560,9 @@ namespace LearningRegistry
 			[ScriptIgnore]
 			public String doc_ID;
 			
+			[DataMember]
+			public lr_TOS TOS;
+			
             [DataMember]
             public int weight;
 
@@ -572,7 +573,6 @@ namespace LearningRegistry
             public int resource_TTL;
             public lr_document()
             {
-              //  TOS = new lr_TOS();
                 active = true;
                 doc_type = "resource_data";
                 doc_version = "0.23.0";
@@ -590,6 +590,8 @@ namespace LearningRegistry
                 weight = 100;
                 resource_TTL = 0;
                 digital_signature = null;
+				
+				TOS = new lr_TOS();
             }
             public void Sign(string passphrase, string keyID, string keyloc)
             {
@@ -659,6 +661,18 @@ namespace LearningRegistry
                    // throw e;
                 }
             }
+			
+			public string Serialize()
+			{
+				JavaScriptSerializer ser = new JavaScriptSerializer();
+				return ser.Serialize(this);
+			}
+			
+			public static lr_document Deserialize(string json)
+			{
+				JavaScriptSerializer ser = new JavaScriptSerializer();
+				return ser.Deserialize<lr_document>(json);
+			}
         }
         public class AcceptAllCerts : System.Net.ICertificatePolicy
         {

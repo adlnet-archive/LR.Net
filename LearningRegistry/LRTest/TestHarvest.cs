@@ -28,7 +28,7 @@ namespace LRTest
 			var res = _client.Publish(env);
 			string docId = res.document_results[0].doc_ID;
 			HarvestRecord rec = _harvester.GetRecordByDocId(docId);
-			
+
 			Assert.IsTrue(res.OK);
 			Assert.IsTrue(String.IsNullOrEmpty(res.error));
 			
