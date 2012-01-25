@@ -78,9 +78,7 @@ namespace LearningRegistry
                 return Blist;
 
             }
-            catch (Exception e)
-            {
-            }
+            catch {}
            
 
             if (input.GetType() == typeof(string))
@@ -164,7 +162,7 @@ namespace LearningRegistry
                         }
                     }
                 }
-                catch (System.InvalidCastException h)
+                catch (System.InvalidCastException)
                 {
                 }
 
@@ -179,7 +177,7 @@ namespace LearningRegistry
                         handled = true;
                     }
                 }
-                catch (System.InvalidCastException h)
+                catch (System.InvalidCastException)
                 {
                 }
 
@@ -197,7 +195,7 @@ namespace LearningRegistry
                         handled = true;
                     }
                 }
-                catch (System.InvalidCastException h)
+                catch (System.InvalidCastException)
                 {  
                 }
 
@@ -213,7 +211,7 @@ namespace LearningRegistry
                             handled = true;
                         }
                 }
-                catch (System.InvalidCastException h)
+                catch (System.InvalidCastException)
                 {
                 }
 
@@ -231,7 +229,7 @@ namespace LearningRegistry
                             handled = true;
                         }
                     }
-                    catch (System.InvalidCastException h)
+                    catch (System.InvalidCastException)
                     {
                     }
 
@@ -246,7 +244,7 @@ namespace LearningRegistry
                             handled = true;
                         }
                     }
-                    catch (System.InvalidCastException h)
+                    catch (System.InvalidCastException)
                     {
                     }
 
@@ -260,7 +258,7 @@ namespace LearningRegistry
                             handled = true;
                         }
                     }
-                    catch (System.InvalidCastException h)
+                    catch (System.InvalidCastException)
                     {
                     }
 
@@ -280,9 +278,7 @@ namespace LearningRegistry
                             handled = true;
                         }
                     }
-                    catch (System.InvalidCastException h)
-                    {
-                    }
+                    catch (System.InvalidCastException) {}
                 
                 if(!handled && val != null && f.Name !="extensions")    
                     dictionary.Add(f.Name, val);
@@ -295,6 +291,61 @@ namespace LearningRegistry
                         dictionary.Add(p.Key, p.Value);
                 }
         }
+		public string Serialize()
+		{
+			JavaScriptSerializer ser = new JavaScriptSerializer();
+			var json = ser.Serialize(this);
+			
+			// Deserialize into a dictionary and remove
+			// empty attributes
+			var jsonDict = ser.Deserialize<Dictionary<string, object>>(json);
+			removeEmptyFields(ref jsonDict);
+			
+			return ser.Serialize(jsonDict);
+		}
+		private void removeEmptyFields(ref Dictionary<string, object> item)
+		{
+			var keys = item.Keys.ToList();
+			foreach(string key in keys)
+			{
+				var stringObj = item[key] as string;
+				var dictObj = item[key] as Dictionary<string, object>;
+				var listObj = item[key] as System.Collections.ArrayList;
+				
+				if(item[key] == null || 
+				   (stringObj != null && String.IsNullOrEmpty(stringObj)))
+					item.Remove(key);
+				else if(dictObj != null)
+				{
+					if(dictObj.Count < 1)
+						item.Remove(key);
+					else
+						removeEmptyFields(ref dictObj);
+				} else if (listObj != null)
+				{
+					// This will need to be changed if we ever have
+					// non-string arrays (which is currently
+					// the scope of the spec's array implementations)
+					ArrayList newList = new ArrayList();
+					foreach(object li in listObj)
+					{
+						var stringLi = li as string;
+						var dictLi = li as Dictionary<string, object>;
+						if(!String.IsNullOrEmpty(stringLi))
+							newList.Add(li);
+						else if(dictLi != null)
+						{
+							removeEmptyFields(ref dictLi);
+							newList.Add(dictLi);
+						}
+					}
+					listObj = newList;
+					if(listObj.Count < 1)
+						item.Remove(key);
+				}
+				
+			}
+		}
     }
     namespace RDDD
     {
@@ -531,7 +582,6 @@ namespace LearningRegistry
           //  [DataMember]
           //  public lr_TOS TOS;
             [DataMember]
-			[ScriptIgnore]
             public Boolean active;
             [DataMember]
             public String doc_type;
@@ -647,71 +697,21 @@ namespace LearningRegistry
                     digital_signature.signature = sig;
                     digital_signature.signing_method = Taxonomies.SigningMethod.LR_PGP_1_0;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     try
                     {
                         System.IO.File.Delete(randomname + ".json.bencoded.asc");
                     }
-                    catch (Exception j) { }
+                    catch { }
                     try
                     {
                         System.IO.File.Delete( randomname + ".json.bencoded" );
-                     }
-                    catch (Exception j) { }
+                    }
+                    catch (Exception) { }
                    // throw e;
                 }
-            }
-			
-			public string Serialize()
-			{
-				JavaScriptSerializer ser = new JavaScriptSerializer();
-				var json = ser.Serialize(this);
-				
-				// Deserialize into a dictionary and remove
-				// empty attributes
-				var jsonDict = ser.Deserialize<Dictionary<string, object>>(json);
-				removeEmptyFields(ref jsonDict);
-				
-				return ser.Serialize(jsonDict);
-			}
-			
-			private void removeEmptyFields(ref Dictionary<string, object> item)
-			{
-				var keys = item.Keys.ToList();
-				foreach(string key in keys)
-				{
-					var stringObj = item[key] as string;
-					var dictObj = item[key] as Dictionary<string, object>;
-					var listObj = item[key] as System.Collections.ArrayList;
-					if(item[key] == null || 
-					   (stringObj != null && String.IsNullOrEmpty(stringObj)))
-						item.Remove(key);
-					else if(dictObj != null)
-					{
-						if(dictObj.Count < 1)
-							item.Remove(key);
-						else
-							removeEmptyFields(ref dictObj);
-					} else if (listObj != null)
-					{
-						// This will need to be changed if we ever have
-						// non-string arrays (which is currently
-						// the scope of the spec's array implementations)
-						ArrayList newList = new ArrayList();
-						foreach(string li in listObj)
-						{
-							if(!String.IsNullOrEmpty(li))
-								newList.Add(li);
-						}
-						listObj = newList;
-						if(listObj.Count < 1)
-							item.Remove(key);
-					}
-					
-				}
-			}
-							                                       
+            }				                                       
 			
 			public static lr_document Deserialize(string json)
 			{
@@ -760,7 +760,7 @@ namespace LearningRegistry
                     doc.Sign( passphrase,  keyID,  keyloc);
                 }
             }
-            public string Serialize()
+            /*public string Serialize()
             {
 
                 //backup the resource data, then serialize it to a string
@@ -789,7 +789,7 @@ namespace LearningRegistry
                 }
                 return data;
 
-            }
+            }*/
         }
     }
 }
