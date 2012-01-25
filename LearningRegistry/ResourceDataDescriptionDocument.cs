@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -665,8 +666,52 @@ namespace LearningRegistry
 			public string Serialize()
 			{
 				JavaScriptSerializer ser = new JavaScriptSerializer();
-				return ser.Serialize(this);
+				var json = ser.Serialize(this);
+				
+				// Deserialize into a dictionary and remove
+				// empty attributes
+				var jsonDict = ser.Deserialize<Dictionary<string, object>>(json);
+				removeEmptyFields(ref jsonDict);
+				
+				return ser.Serialize(jsonDict);
 			}
+			
+			private void removeEmptyFields(ref Dictionary<string, object> item)
+			{
+				var keys = item.Keys.ToList();
+				foreach(string key in keys)
+				{
+					var stringObj = item[key] as string;
+					var dictObj = item[key] as Dictionary<string, object>;
+					var listObj = item[key] as System.Collections.ArrayList;
+					if(item[key] == null || 
+					   (stringObj != null && String.IsNullOrEmpty(stringObj)))
+						item.Remove(key);
+					else if(dictObj != null)
+					{
+						if(dictObj.Count < 1)
+							item.Remove(key);
+						else
+							removeEmptyFields(ref dictObj);
+					} else if (listObj != null)
+					{
+						// This will need to be changed if we ever have
+						// non-string arrays (which is currently
+						// the scope of the spec's array implementations)
+						ArrayList newList = new ArrayList();
+						foreach(string li in listObj)
+						{
+							if(!String.IsNullOrEmpty(li))
+								newList.Add(li);
+						}
+						listObj = newList;
+						if(listObj.Count < 1)
+							item.Remove(key);
+					}
+					
+				}
+			}
+							                                       
 			
 			public static lr_document Deserialize(string json)
 			{

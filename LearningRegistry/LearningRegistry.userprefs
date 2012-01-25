@@ -3,8 +3,10 @@
   <MonoDevelop.Ide.Workbench ActiveDocument="PublishGUI\MainWindow.cs">
     <Files>
       <File FileName="PublishGUI\Main.cs" Line="1" Column="1" />
-      <File FileName="PublishGUI\MainWindow.cs" Line="73" Column="5" />
-      <File FileName="ResourceDataDescriptionDocument.cs" Line="649" Column="25" />
+      <File FileName="PublishGUI\MainWindow.cs" Line="98" Column="49" />
+      <File FileName="ResourceDataDescriptionDocument.cs" Line="705" Column="25" />
+      <File FileName="Taxonomies.cs" Line="30" Column="4" />
+      <File FileName="LRUtils.cs" Line="26" Column="62" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -29,7 +31,12 @@
         </State>
       </Pad>
       <Pad Id="MonoDevelop.Debugger.WatchPad">
-        <State />
+        <State>
+          <Value>stringObj</Value>
+          <Value>dictObj</Value>
+          <Value>key</Value>
+          <Value>item["keys"]</Value>
+        </State>
       </Pad>
       <Pad Id="MonoDevelop.NUnit.TestPad">
         <State expanded="True" selected="True" />

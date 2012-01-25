@@ -10,21 +10,10 @@ public partial class MainWindow
 	private global::Gtk.Action PublishAction;
 	private global::Gtk.Action PublishCurrentDocumentAction;
 	private global::Gtk.Action PublishFromFolderAction;
+	private global::Gtk.Action NewAction;
 	private global::Gtk.VBox MainVerticalPane;
 	private global::Gtk.MenuBar menubar1;
 	private global::Gtk.Notebook RootNotebook;
-	private global::Gtk.HBox NodeInformationContainer;
-	private global::Gtk.VBox NodeInfoColumn;
-	private global::Gtk.Label lbl_NodeUrl;
-	private global::Gtk.Entry NodeUrlTextBox;
-	private global::Gtk.Label lbl_AuthType;
-	private global::Gtk.ComboBox AuthTypeComboBox;
-	private global::Gtk.VBox AuthCredentialsContainer;
-	private global::Gtk.Label lbl_AuthUsername;
-	private global::Gtk.Entry AuthUsernameTextBox;
-	private global::Gtk.Label lbl_AuthPassword;
-	private global::Gtk.Entry AuthPasswordTextBox;
-	private global::Gtk.Label lbl_nb_NodeInformation;
 	private global::Gtk.HBox ResourceDescriptionContainer;
 	private global::Gtk.VBox ResourceDescriptionColumn1;
 	private global::Gtk.Label lbl_ResourceDataType;
@@ -40,6 +29,9 @@ public partial class MainWindow
 	private global::Gtk.VBox PayloadLocatorContainer;
 	private global::Gtk.Label lbl_PayloadLocator;
 	private global::Gtk.Entry PayloadLocatorTextBox;
+	private global::Gtk.HButtonBox PayloadEditorButtonBox;
+	private global::Gtk.Button EditPayloadButton;
+	private global::Gtk.Button ChoosePayloadFileButton;
 	private global::Gtk.Label lbl_PayloadSchema;
 	private global::Gtk.Entry PayloadSchemaTextBox;
 	private global::Gtk.VBox ResourceDescriptionColumn2;
@@ -55,6 +47,16 @@ public partial class MainWindow
 	private global::Gtk.Label lbl_Days;
 	private global::Gtk.VBox ResourceDescriptionColumn3;
 	private global::Gtk.Label lbl_SubmitterType;
+	private global::Gtk.ComboBox SubmitterTypeComboBox;
+	private global::Gtk.VBox SubmitterNameContainer;
+	private global::Gtk.Label lbl_SubmitterName;
+	private global::Gtk.Entry SubmitterNameTextBox;
+	private global::Gtk.Label lbl_Curator;
+	private global::Gtk.Entry CuratorTextBox;
+	private global::Gtk.Label lbl_Owner;
+	private global::Gtk.Entry OwnerTextBox;
+	private global::Gtk.Label lbl_Signer;
+	private global::Gtk.Entry SignerTextBox;
 	private global::Gtk.Label lbl_nb_ResourceDescription;
 	private global::Gtk.VBox TermsOfServiceContainer;
 	private global::Gtk.Label lbl_TermsOfServiceUrl;
@@ -67,6 +69,21 @@ public partial class MainWindow
 	private global::Gtk.Label lbl_SignatureType;
 	private global::Gtk.ComboBox SignatureTypeComboBox;
 	private global::Gtk.Label lbl_nb_SignatureInformation;
+	private global::Gtk.HBox NodeInformationContainer;
+	private global::Gtk.VBox NodeInfoColumn;
+	private global::Gtk.Label lbl_NodeUrl;
+	private global::Gtk.HBox NodeUrlTextContainer;
+	private global::Gtk.Label lbl_http;
+	private global::Gtk.Entry NodeUrlTextBox;
+	private global::Gtk.Label lbl_trailingSlash;
+	private global::Gtk.Label lbl_AuthType;
+	private global::Gtk.ComboBox AuthTypeComboBox;
+	private global::Gtk.VBox AuthCredentialsContainer;
+	private global::Gtk.Label lbl_AuthUsername;
+	private global::Gtk.Entry AuthUsernameTextBox;
+	private global::Gtk.Label lbl_AuthPassword;
+	private global::Gtk.Entry AuthPasswordTextBox;
+	private global::Gtk.Label lbl_nb_NodeInformation;
 	private global::Gtk.HBox RequiredFieldNotificationContainer;
 	private global::Gtk.Label lbl_requiredFieldsNotifier;
 	private global::Gtk.Label lbl_ConsoleOutput;
@@ -97,6 +114,9 @@ public partial class MainWindow
 		this.PublishFromFolderAction = new global::Gtk.Action ("PublishFromFolderAction", global::Mono.Unix.Catalog.GetString ("Publish From Folder..."), null, null);
 		this.PublishFromFolderAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Publish From Folder...");
 		w1.Add (this.PublishFromFolderAction, null);
+		this.NewAction = new global::Gtk.Action ("NewAction", global::Mono.Unix.Catalog.GetString ("New"), null, null);
+		this.NewAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("New");
+		w1.Add (this.NewAction, null);
 		this.UIManager.InsertActionGroup (w1, 0);
 		this.AddAccelGroup (this.UIManager.AccelGroup);
 		this.Name = "MainWindow";
@@ -108,7 +128,7 @@ public partial class MainWindow
 		this.MainVerticalPane.Spacing = 6;
 		this.MainVerticalPane.BorderWidth = ((uint)(6));
 		// Container child MainVerticalPane.Gtk.Box+BoxChild
-		this.UIManager.AddUiFromString (@"<ui><menubar name='menubar1'><menu name='FileAction' action='FileAction'><menuitem name='OpenResourceDescriptionAction' action='OpenResourceDescriptionAction'/><menuitem name='SaveResourceDescriptionAction' action='SaveResourceDescriptionAction'/></menu><menu name='PublishAction' action='PublishAction'><menuitem name='PublishCurrentDocumentAction' action='PublishCurrentDocumentAction'/><menuitem name='PublishFromFolderAction' action='PublishFromFolderAction'/></menu></menubar></ui>");
+		this.UIManager.AddUiFromString (@"<ui><menubar name='menubar1'><menu name='FileAction' action='FileAction'><menuitem name='NewAction' action='NewAction'/><menuitem name='OpenResourceDescriptionAction' action='OpenResourceDescriptionAction'/><menuitem name='SaveResourceDescriptionAction' action='SaveResourceDescriptionAction'/></menu><menu name='PublishAction' action='PublishAction'><menuitem name='PublishCurrentDocumentAction' action='PublishCurrentDocumentAction'/><menuitem name='PublishFromFolderAction' action='PublishFromFolderAction'/></menu></menubar></ui>");
 		this.menubar1 = ((global::Gtk.MenuBar)(this.UIManager.GetWidget ("/menubar1")));
 		this.menubar1.Name = "menubar1";
 		this.MainVerticalPane.Add (this.menubar1);
@@ -120,121 +140,7 @@ public partial class MainWindow
 		this.RootNotebook = new global::Gtk.Notebook ();
 		this.RootNotebook.CanFocus = true;
 		this.RootNotebook.Name = "RootNotebook";
-		this.RootNotebook.CurrentPage = 1;
-		// Container child RootNotebook.Gtk.Notebook+NotebookChild
-		this.NodeInformationContainer = new global::Gtk.HBox ();
-		this.NodeInformationContainer.Name = "NodeInformationContainer";
-		this.NodeInformationContainer.Spacing = 6;
-		this.NodeInformationContainer.BorderWidth = ((uint)(9));
-		// Container child NodeInformationContainer.Gtk.Box+BoxChild
-		this.NodeInfoColumn = new global::Gtk.VBox ();
-		this.NodeInfoColumn.Name = "NodeInfoColumn";
-		this.NodeInfoColumn.Spacing = 6;
-		// Container child NodeInfoColumn.Gtk.Box+BoxChild
-		this.lbl_NodeUrl = new global::Gtk.Label ();
-		this.lbl_NodeUrl.Name = "lbl_NodeUrl";
-		this.lbl_NodeUrl.Xalign = 0F;
-		this.lbl_NodeUrl.LabelProp = global::Mono.Unix.Catalog.GetString ("*Node Url:");
-		this.NodeInfoColumn.Add (this.lbl_NodeUrl);
-		global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.NodeInfoColumn [this.lbl_NodeUrl]));
-		w3.Position = 0;
-		w3.Expand = false;
-		w3.Fill = false;
-		// Container child NodeInfoColumn.Gtk.Box+BoxChild
-		this.NodeUrlTextBox = new global::Gtk.Entry ();
-		this.NodeUrlTextBox.CanFocus = true;
-		this.NodeUrlTextBox.Name = "NodeUrlTextBox";
-		this.NodeUrlTextBox.IsEditable = true;
-		this.NodeUrlTextBox.InvisibleChar = '●';
-		this.NodeInfoColumn.Add (this.NodeUrlTextBox);
-		global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.NodeInfoColumn [this.NodeUrlTextBox]));
-		w4.Position = 1;
-		w4.Expand = false;
-		w4.Fill = false;
-		// Container child NodeInfoColumn.Gtk.Box+BoxChild
-		this.lbl_AuthType = new global::Gtk.Label ();
-		this.lbl_AuthType.Name = "lbl_AuthType";
-		this.lbl_AuthType.Xalign = 0F;
-		this.lbl_AuthType.LabelProp = global::Mono.Unix.Catalog.GetString ("Auth Type:");
-		this.NodeInfoColumn.Add (this.lbl_AuthType);
-		global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.NodeInfoColumn [this.lbl_AuthType]));
-		w5.Position = 2;
-		w5.Expand = false;
-		w5.Fill = false;
-		// Container child NodeInfoColumn.Gtk.Box+BoxChild
-		this.AuthTypeComboBox = global::Gtk.ComboBox.NewText ();
-		this.AuthTypeComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("None"));
-		this.AuthTypeComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("HTTP Basic"));
-		this.AuthTypeComboBox.Name = "AuthTypeComboBox";
-		this.AuthTypeComboBox.Active = 0;
-		this.NodeInfoColumn.Add (this.AuthTypeComboBox);
-		global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.NodeInfoColumn [this.AuthTypeComboBox]));
-		w6.Position = 3;
-		w6.Expand = false;
-		w6.Fill = false;
-		// Container child NodeInfoColumn.Gtk.Box+BoxChild
-		this.AuthCredentialsContainer = new global::Gtk.VBox ();
-		this.AuthCredentialsContainer.Name = "AuthCredentialsContainer";
-		this.AuthCredentialsContainer.Spacing = 6;
-		// Container child AuthCredentialsContainer.Gtk.Box+BoxChild
-		this.lbl_AuthUsername = new global::Gtk.Label ();
-		this.lbl_AuthUsername.Name = "lbl_AuthUsername";
-		this.lbl_AuthUsername.Xalign = 0F;
-		this.lbl_AuthUsername.LabelProp = global::Mono.Unix.Catalog.GetString ("Username:");
-		this.AuthCredentialsContainer.Add (this.lbl_AuthUsername);
-		global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.AuthCredentialsContainer [this.lbl_AuthUsername]));
-		w7.Position = 0;
-		w7.Expand = false;
-		w7.Fill = false;
-		// Container child AuthCredentialsContainer.Gtk.Box+BoxChild
-		this.AuthUsernameTextBox = new global::Gtk.Entry ();
-		this.AuthUsernameTextBox.CanFocus = true;
-		this.AuthUsernameTextBox.Name = "AuthUsernameTextBox";
-		this.AuthUsernameTextBox.IsEditable = true;
-		this.AuthUsernameTextBox.InvisibleChar = '●';
-		this.AuthCredentialsContainer.Add (this.AuthUsernameTextBox);
-		global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.AuthCredentialsContainer [this.AuthUsernameTextBox]));
-		w8.Position = 1;
-		w8.Expand = false;
-		w8.Fill = false;
-		// Container child AuthCredentialsContainer.Gtk.Box+BoxChild
-		this.lbl_AuthPassword = new global::Gtk.Label ();
-		this.lbl_AuthPassword.Name = "lbl_AuthPassword";
-		this.lbl_AuthPassword.Xalign = 0F;
-		this.lbl_AuthPassword.LabelProp = global::Mono.Unix.Catalog.GetString ("Password:");
-		this.AuthCredentialsContainer.Add (this.lbl_AuthPassword);
-		global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.AuthCredentialsContainer [this.lbl_AuthPassword]));
-		w9.Position = 2;
-		w9.Expand = false;
-		w9.Fill = false;
-		// Container child AuthCredentialsContainer.Gtk.Box+BoxChild
-		this.AuthPasswordTextBox = new global::Gtk.Entry ();
-		this.AuthPasswordTextBox.CanFocus = true;
-		this.AuthPasswordTextBox.Name = "AuthPasswordTextBox";
-		this.AuthPasswordTextBox.IsEditable = true;
-		this.AuthPasswordTextBox.InvisibleChar = '●';
-		this.AuthCredentialsContainer.Add (this.AuthPasswordTextBox);
-		global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.AuthCredentialsContainer [this.AuthPasswordTextBox]));
-		w10.Position = 3;
-		w10.Expand = false;
-		w10.Fill = false;
-		this.NodeInfoColumn.Add (this.AuthCredentialsContainer);
-		global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.NodeInfoColumn [this.AuthCredentialsContainer]));
-		w11.Position = 4;
-		w11.Expand = false;
-		w11.Fill = false;
-		this.NodeInformationContainer.Add (this.NodeInfoColumn);
-		global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.NodeInformationContainer [this.NodeInfoColumn]));
-		w12.Position = 0;
-		w12.Expand = false;
-		w12.Fill = false;
-		this.RootNotebook.Add (this.NodeInformationContainer);
-		// Notebook tab
-		this.lbl_nb_NodeInformation = new global::Gtk.Label ();
-		this.lbl_nb_NodeInformation.Name = "lbl_nb_NodeInformation";
-		this.lbl_nb_NodeInformation.LabelProp = global::Mono.Unix.Catalog.GetString ("Node Information");
-		this.RootNotebook.SetTabLabel (this.NodeInformationContainer, this.lbl_nb_NodeInformation);
-		this.lbl_nb_NodeInformation.ShowAll ();
+		this.RootNotebook.CurrentPage = 3;
 		// Container child RootNotebook.Gtk.Notebook+NotebookChild
 		this.ResourceDescriptionContainer = new global::Gtk.HBox ();
 		this.ResourceDescriptionContainer.Name = "ResourceDescriptionContainer";
@@ -250,10 +156,10 @@ public partial class MainWindow
 		this.lbl_ResourceDataType.Xalign = 0F;
 		this.lbl_ResourceDataType.LabelProp = global::Mono.Unix.Catalog.GetString ("*Resource Data Type:");
 		this.ResourceDescriptionColumn1.Add (this.lbl_ResourceDataType);
-		global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn1 [this.lbl_ResourceDataType]));
-		w14.Position = 0;
-		w14.Expand = false;
-		w14.Fill = false;
+		global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn1 [this.lbl_ResourceDataType]));
+		w3.Position = 0;
+		w3.Expand = false;
+		w3.Fill = false;
 		// Container child ResourceDescriptionColumn1.Gtk.Box+BoxChild
 		this.ResourceDataTypeComboBox = global::Gtk.ComboBox.NewText ();
 		this.ResourceDataTypeComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("Metadata"));
@@ -264,20 +170,20 @@ public partial class MainWindow
 		this.ResourceDataTypeComboBox.Name = "ResourceDataTypeComboBox";
 		this.ResourceDataTypeComboBox.Active = 0;
 		this.ResourceDescriptionColumn1.Add (this.ResourceDataTypeComboBox);
-		global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn1 [this.ResourceDataTypeComboBox]));
-		w15.Position = 1;
-		w15.Expand = false;
-		w15.Fill = false;
+		global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn1 [this.ResourceDataTypeComboBox]));
+		w4.Position = 1;
+		w4.Expand = false;
+		w4.Fill = false;
 		// Container child ResourceDescriptionColumn1.Gtk.Box+BoxChild
 		this.lbl_ResourceLocator = new global::Gtk.Label ();
 		this.lbl_ResourceLocator.Name = "lbl_ResourceLocator";
 		this.lbl_ResourceLocator.Xalign = 0F;
 		this.lbl_ResourceLocator.LabelProp = global::Mono.Unix.Catalog.GetString ("*Resource Locator:");
 		this.ResourceDescriptionColumn1.Add (this.lbl_ResourceLocator);
-		global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn1 [this.lbl_ResourceLocator]));
-		w16.Position = 2;
-		w16.Expand = false;
-		w16.Fill = false;
+		global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn1 [this.lbl_ResourceLocator]));
+		w5.Position = 2;
+		w5.Expand = false;
+		w5.Fill = false;
 		// Container child ResourceDescriptionColumn1.Gtk.Box+BoxChild
 		this.ResourceLocatorTextBox = new global::Gtk.Entry ();
 		this.ResourceLocatorTextBox.CanFocus = true;
@@ -285,20 +191,20 @@ public partial class MainWindow
 		this.ResourceLocatorTextBox.IsEditable = true;
 		this.ResourceLocatorTextBox.InvisibleChar = '●';
 		this.ResourceDescriptionColumn1.Add (this.ResourceLocatorTextBox);
-		global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn1 [this.ResourceLocatorTextBox]));
-		w17.Position = 3;
-		w17.Expand = false;
-		w17.Fill = false;
+		global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn1 [this.ResourceLocatorTextBox]));
+		w6.Position = 3;
+		w6.Expand = false;
+		w6.Fill = false;
 		// Container child ResourceDescriptionColumn1.Gtk.Box+BoxChild
 		this.lbl_PayloadPlacement = new global::Gtk.Label ();
 		this.lbl_PayloadPlacement.Name = "lbl_PayloadPlacement";
 		this.lbl_PayloadPlacement.Xalign = 0F;
 		this.lbl_PayloadPlacement.LabelProp = global::Mono.Unix.Catalog.GetString ("*Payload Placement:");
 		this.ResourceDescriptionColumn1.Add (this.lbl_PayloadPlacement);
-		global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn1 [this.lbl_PayloadPlacement]));
-		w18.Position = 4;
-		w18.Expand = false;
-		w18.Fill = false;
+		global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn1 [this.lbl_PayloadPlacement]));
+		w7.Position = 4;
+		w7.Expand = false;
+		w7.Fill = false;
 		// Container child ResourceDescriptionColumn1.Gtk.Box+BoxChild
 		this.PayloadPlacementComboBox = global::Gtk.ComboBox.NewText ();
 		this.PayloadPlacementComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("Inline"));
@@ -307,10 +213,10 @@ public partial class MainWindow
 		this.PayloadPlacementComboBox.Name = "PayloadPlacementComboBox";
 		this.PayloadPlacementComboBox.Active = 0;
 		this.ResourceDescriptionColumn1.Add (this.PayloadPlacementComboBox);
-		global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn1 [this.PayloadPlacementComboBox]));
-		w19.Position = 5;
-		w19.Expand = false;
-		w19.Fill = false;
+		global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn1 [this.PayloadPlacementComboBox]));
+		w8.Position = 5;
+		w8.Expand = false;
+		w8.Fill = false;
 		// Container child ResourceDescriptionColumn1.Gtk.Box+BoxChild
 		this.PayloadChooseContainer = new global::Gtk.VBox ();
 		this.PayloadChooseContainer.Name = "PayloadChooseContainer";
@@ -325,23 +231,23 @@ public partial class MainWindow
 		this.lbl_PayloadFile.Xalign = 0F;
 		this.lbl_PayloadFile.LabelProp = global::Mono.Unix.Catalog.GetString ("*Payload File:");
 		this.PayloadFileContainer.Add (this.lbl_PayloadFile);
-		global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.PayloadFileContainer [this.lbl_PayloadFile]));
-		w20.Position = 0;
-		w20.Expand = false;
-		w20.Fill = false;
+		global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.PayloadFileContainer [this.lbl_PayloadFile]));
+		w9.Position = 0;
+		w9.Expand = false;
+		w9.Fill = false;
 		// Container child PayloadFileContainer.Gtk.Box+BoxChild
 		this.PayloadFileChooser = new global::Gtk.FileChooserButton (global::Mono.Unix.Catalog.GetString ("Select A File"), ((global::Gtk.FileChooserAction)(0)));
 		this.PayloadFileChooser.Name = "PayloadFileChooser";
 		this.PayloadFileContainer.Add (this.PayloadFileChooser);
-		global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.PayloadFileContainer [this.PayloadFileChooser]));
-		w21.Position = 1;
-		w21.Expand = false;
-		w21.Fill = false;
+		global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.PayloadFileContainer [this.PayloadFileChooser]));
+		w10.Position = 1;
+		w10.Expand = false;
+		w10.Fill = false;
 		this.PayloadChooseContainer.Add (this.PayloadFileContainer);
-		global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.PayloadChooseContainer [this.PayloadFileContainer]));
-		w22.Position = 0;
-		w22.Expand = false;
-		w22.Fill = false;
+		global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.PayloadChooseContainer [this.PayloadFileContainer]));
+		w11.Position = 0;
+		w11.Expand = false;
+		w11.Fill = false;
 		// Container child PayloadChooseContainer.Gtk.Box+BoxChild
 		this.PayloadLocatorContainer = new global::Gtk.VBox ();
 		this.PayloadLocatorContainer.Name = "PayloadLocatorContainer";
@@ -352,10 +258,10 @@ public partial class MainWindow
 		this.lbl_PayloadLocator.Xalign = 0F;
 		this.lbl_PayloadLocator.LabelProp = global::Mono.Unix.Catalog.GetString ("*Payload Locator:");
 		this.PayloadLocatorContainer.Add (this.lbl_PayloadLocator);
-		global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.PayloadLocatorContainer [this.lbl_PayloadLocator]));
-		w23.Position = 0;
-		w23.Expand = false;
-		w23.Fill = false;
+		global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.PayloadLocatorContainer [this.lbl_PayloadLocator]));
+		w12.Position = 0;
+		w12.Expand = false;
+		w12.Fill = false;
 		// Container child PayloadLocatorContainer.Gtk.Box+BoxChild
 		this.PayloadLocatorTextBox = new global::Gtk.Entry ();
 		this.PayloadLocatorTextBox.CanFocus = true;
@@ -363,30 +269,59 @@ public partial class MainWindow
 		this.PayloadLocatorTextBox.IsEditable = true;
 		this.PayloadLocatorTextBox.InvisibleChar = '●';
 		this.PayloadLocatorContainer.Add (this.PayloadLocatorTextBox);
-		global::Gtk.Box.BoxChild w24 = ((global::Gtk.Box.BoxChild)(this.PayloadLocatorContainer [this.PayloadLocatorTextBox]));
-		w24.Position = 1;
-		w24.Expand = false;
-		w24.Fill = false;
+		global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.PayloadLocatorContainer [this.PayloadLocatorTextBox]));
+		w13.Position = 1;
+		w13.Expand = false;
+		w13.Fill = false;
 		this.PayloadChooseContainer.Add (this.PayloadLocatorContainer);
-		global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(this.PayloadChooseContainer [this.PayloadLocatorContainer]));
-		w25.Position = 1;
-		w25.Expand = false;
-		w25.Fill = false;
+		global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.PayloadChooseContainer [this.PayloadLocatorContainer]));
+		w14.Position = 1;
+		w14.Expand = false;
+		w14.Fill = false;
+		// Container child PayloadChooseContainer.Gtk.Box+BoxChild
+		this.PayloadEditorButtonBox = new global::Gtk.HButtonBox ();
+		this.PayloadEditorButtonBox.Name = "PayloadEditorButtonBox";
+		// Container child PayloadEditorButtonBox.Gtk.ButtonBox+ButtonBoxChild
+		this.EditPayloadButton = new global::Gtk.Button ();
+		this.EditPayloadButton.CanFocus = true;
+		this.EditPayloadButton.Name = "EditPayloadButton";
+		this.EditPayloadButton.UseUnderline = true;
+		this.EditPayloadButton.Label = global::Mono.Unix.Catalog.GetString ("Edit Data");
+		this.PayloadEditorButtonBox.Add (this.EditPayloadButton);
+		global::Gtk.ButtonBox.ButtonBoxChild w15 = ((global::Gtk.ButtonBox.ButtonBoxChild)(this.PayloadEditorButtonBox [this.EditPayloadButton]));
+		w15.Expand = false;
+		w15.Fill = false;
+		// Container child PayloadEditorButtonBox.Gtk.ButtonBox+ButtonBoxChild
+		this.ChoosePayloadFileButton = new global::Gtk.Button ();
+		this.ChoosePayloadFileButton.CanFocus = true;
+		this.ChoosePayloadFileButton.Name = "ChoosePayloadFileButton";
+		this.ChoosePayloadFileButton.UseUnderline = true;
+		this.ChoosePayloadFileButton.Label = global::Mono.Unix.Catalog.GetString ("Choose File...");
+		this.PayloadEditorButtonBox.Add (this.ChoosePayloadFileButton);
+		global::Gtk.ButtonBox.ButtonBoxChild w16 = ((global::Gtk.ButtonBox.ButtonBoxChild)(this.PayloadEditorButtonBox [this.ChoosePayloadFileButton]));
+		w16.Position = 1;
+		w16.Expand = false;
+		w16.Fill = false;
+		this.PayloadChooseContainer.Add (this.PayloadEditorButtonBox);
+		global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.PayloadChooseContainer [this.PayloadEditorButtonBox]));
+		w17.Position = 2;
+		w17.Expand = false;
+		w17.Fill = false;
 		this.ResourceDescriptionColumn1.Add (this.PayloadChooseContainer);
-		global::Gtk.Box.BoxChild w26 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn1 [this.PayloadChooseContainer]));
-		w26.Position = 6;
-		w26.Expand = false;
-		w26.Fill = false;
+		global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn1 [this.PayloadChooseContainer]));
+		w18.Position = 6;
+		w18.Expand = false;
+		w18.Fill = false;
 		// Container child ResourceDescriptionColumn1.Gtk.Box+BoxChild
 		this.lbl_PayloadSchema = new global::Gtk.Label ();
 		this.lbl_PayloadSchema.Name = "lbl_PayloadSchema";
 		this.lbl_PayloadSchema.Xalign = 0F;
 		this.lbl_PayloadSchema.LabelProp = global::Mono.Unix.Catalog.GetString ("*Payload Schema:");
 		this.ResourceDescriptionColumn1.Add (this.lbl_PayloadSchema);
-		global::Gtk.Box.BoxChild w27 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn1 [this.lbl_PayloadSchema]));
-		w27.Position = 7;
-		w27.Expand = false;
-		w27.Fill = false;
+		global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn1 [this.lbl_PayloadSchema]));
+		w19.Position = 7;
+		w19.Expand = false;
+		w19.Fill = false;
 		// Container child ResourceDescriptionColumn1.Gtk.Box+BoxChild
 		this.PayloadSchemaTextBox = new global::Gtk.Entry ();
 		this.PayloadSchemaTextBox.CanFocus = true;
@@ -394,16 +329,16 @@ public partial class MainWindow
 		this.PayloadSchemaTextBox.IsEditable = true;
 		this.PayloadSchemaTextBox.InvisibleChar = '●';
 		this.ResourceDescriptionColumn1.Add (this.PayloadSchemaTextBox);
-		global::Gtk.Box.BoxChild w28 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn1 [this.PayloadSchemaTextBox]));
-		w28.Position = 8;
-		w28.Expand = false;
-		w28.Fill = false;
+		global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn1 [this.PayloadSchemaTextBox]));
+		w20.Position = 8;
+		w20.Expand = false;
+		w20.Fill = false;
 		this.ResourceDescriptionContainer.Add (this.ResourceDescriptionColumn1);
-		global::Gtk.Box.BoxChild w29 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionContainer [this.ResourceDescriptionColumn1]));
-		w29.Position = 0;
-		w29.Expand = false;
-		w29.Fill = false;
-		w29.Padding = ((uint)(10));
+		global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionContainer [this.ResourceDescriptionColumn1]));
+		w21.Position = 0;
+		w21.Expand = false;
+		w21.Fill = false;
+		w21.Padding = ((uint)(10));
 		// Container child ResourceDescriptionContainer.Gtk.Box+BoxChild
 		this.ResourceDescriptionColumn2 = new global::Gtk.VBox ();
 		this.ResourceDescriptionColumn2.Name = "ResourceDescriptionColumn2";
@@ -414,10 +349,10 @@ public partial class MainWindow
 		this.lbl_SchemaLocator.Xalign = 0F;
 		this.lbl_SchemaLocator.LabelProp = global::Mono.Unix.Catalog.GetString ("Schema Locator:");
 		this.ResourceDescriptionColumn2.Add (this.lbl_SchemaLocator);
-		global::Gtk.Box.BoxChild w30 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn2 [this.lbl_SchemaLocator]));
-		w30.Position = 0;
-		w30.Expand = false;
-		w30.Fill = false;
+		global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn2 [this.lbl_SchemaLocator]));
+		w22.Position = 0;
+		w22.Expand = false;
+		w22.Fill = false;
 		// Container child ResourceDescriptionColumn2.Gtk.Box+BoxChild
 		this.PayloadSchemaLocatorTextBox = new global::Gtk.Entry ();
 		this.PayloadSchemaLocatorTextBox.CanFocus = true;
@@ -425,20 +360,20 @@ public partial class MainWindow
 		this.PayloadSchemaLocatorTextBox.IsEditable = true;
 		this.PayloadSchemaLocatorTextBox.InvisibleChar = '●';
 		this.ResourceDescriptionColumn2.Add (this.PayloadSchemaLocatorTextBox);
-		global::Gtk.Box.BoxChild w31 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn2 [this.PayloadSchemaLocatorTextBox]));
-		w31.Position = 1;
-		w31.Expand = false;
-		w31.Fill = false;
+		global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn2 [this.PayloadSchemaLocatorTextBox]));
+		w23.Position = 1;
+		w23.Expand = false;
+		w23.Fill = false;
 		// Container child ResourceDescriptionColumn2.Gtk.Box+BoxChild
 		this.lbl_SchemaFormat = new global::Gtk.Label ();
 		this.lbl_SchemaFormat.Name = "lbl_SchemaFormat";
 		this.lbl_SchemaFormat.Xalign = 0F;
 		this.lbl_SchemaFormat.LabelProp = global::Mono.Unix.Catalog.GetString ("Schema MIME Type:");
 		this.ResourceDescriptionColumn2.Add (this.lbl_SchemaFormat);
-		global::Gtk.Box.BoxChild w32 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn2 [this.lbl_SchemaFormat]));
-		w32.Position = 2;
-		w32.Expand = false;
-		w32.Fill = false;
+		global::Gtk.Box.BoxChild w24 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn2 [this.lbl_SchemaFormat]));
+		w24.Position = 2;
+		w24.Expand = false;
+		w24.Fill = false;
 		// Container child ResourceDescriptionColumn2.Gtk.Box+BoxChild
 		this.SchemaFormatTextBox = new global::Gtk.Entry ();
 		this.SchemaFormatTextBox.CanFocus = true;
@@ -446,20 +381,20 @@ public partial class MainWindow
 		this.SchemaFormatTextBox.IsEditable = true;
 		this.SchemaFormatTextBox.InvisibleChar = '●';
 		this.ResourceDescriptionColumn2.Add (this.SchemaFormatTextBox);
-		global::Gtk.Box.BoxChild w33 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn2 [this.SchemaFormatTextBox]));
-		w33.Position = 3;
-		w33.Expand = false;
-		w33.Fill = false;
+		global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn2 [this.SchemaFormatTextBox]));
+		w25.Position = 3;
+		w25.Expand = false;
+		w25.Fill = false;
 		// Container child ResourceDescriptionColumn2.Gtk.Box+BoxChild
 		this.lbl_Keywords = new global::Gtk.Label ();
 		this.lbl_Keywords.Name = "lbl_Keywords";
 		this.lbl_Keywords.Xalign = 0F;
 		this.lbl_Keywords.LabelProp = global::Mono.Unix.Catalog.GetString ("Keywords (separated by commas):");
 		this.ResourceDescriptionColumn2.Add (this.lbl_Keywords);
-		global::Gtk.Box.BoxChild w34 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn2 [this.lbl_Keywords]));
-		w34.Position = 4;
-		w34.Expand = false;
-		w34.Fill = false;
+		global::Gtk.Box.BoxChild w26 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn2 [this.lbl_Keywords]));
+		w26.Position = 4;
+		w26.Expand = false;
+		w26.Fill = false;
 		// Container child ResourceDescriptionColumn2.Gtk.Box+BoxChild
 		this.KeywordsTextBox = new global::Gtk.Entry ();
 		this.KeywordsTextBox.CanFocus = true;
@@ -467,20 +402,20 @@ public partial class MainWindow
 		this.KeywordsTextBox.IsEditable = true;
 		this.KeywordsTextBox.InvisibleChar = '●';
 		this.ResourceDescriptionColumn2.Add (this.KeywordsTextBox);
-		global::Gtk.Box.BoxChild w35 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn2 [this.KeywordsTextBox]));
-		w35.Position = 5;
-		w35.Expand = false;
-		w35.Fill = false;
+		global::Gtk.Box.BoxChild w27 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn2 [this.KeywordsTextBox]));
+		w27.Position = 5;
+		w27.Expand = false;
+		w27.Fill = false;
 		// Container child ResourceDescriptionColumn2.Gtk.Box+BoxChild
 		this.lbl_TimeToLive = new global::Gtk.Label ();
 		this.lbl_TimeToLive.Name = "lbl_TimeToLive";
 		this.lbl_TimeToLive.Xalign = 0F;
 		this.lbl_TimeToLive.LabelProp = global::Mono.Unix.Catalog.GetString ("Time To Live:");
 		this.ResourceDescriptionColumn2.Add (this.lbl_TimeToLive);
-		global::Gtk.Box.BoxChild w36 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn2 [this.lbl_TimeToLive]));
-		w36.Position = 6;
-		w36.Expand = false;
-		w36.Fill = false;
+		global::Gtk.Box.BoxChild w28 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn2 [this.lbl_TimeToLive]));
+		w28.Position = 6;
+		w28.Expand = false;
+		w28.Fill = false;
 		// Container child ResourceDescriptionColumn2.Gtk.Box+BoxChild
 		this.TTLFieldContainer = new global::Gtk.HBox ();
 		this.TTLFieldContainer.Name = "TTLFieldContainer";
@@ -493,28 +428,28 @@ public partial class MainWindow
 		this.TimeToLiveTextBox.WidthChars = 10;
 		this.TimeToLiveTextBox.InvisibleChar = '●';
 		this.TTLFieldContainer.Add (this.TimeToLiveTextBox);
-		global::Gtk.Box.BoxChild w37 = ((global::Gtk.Box.BoxChild)(this.TTLFieldContainer [this.TimeToLiveTextBox]));
-		w37.Position = 0;
+		global::Gtk.Box.BoxChild w29 = ((global::Gtk.Box.BoxChild)(this.TTLFieldContainer [this.TimeToLiveTextBox]));
+		w29.Position = 0;
 		// Container child TTLFieldContainer.Gtk.Box+BoxChild
 		this.lbl_Days = new global::Gtk.Label ();
 		this.lbl_Days.Name = "lbl_Days";
 		this.lbl_Days.LabelProp = global::Mono.Unix.Catalog.GetString ("days");
 		this.TTLFieldContainer.Add (this.lbl_Days);
-		global::Gtk.Box.BoxChild w38 = ((global::Gtk.Box.BoxChild)(this.TTLFieldContainer [this.lbl_Days]));
-		w38.Position = 1;
-		w38.Expand = false;
-		w38.Fill = false;
+		global::Gtk.Box.BoxChild w30 = ((global::Gtk.Box.BoxChild)(this.TTLFieldContainer [this.lbl_Days]));
+		w30.Position = 1;
+		w30.Expand = false;
+		w30.Fill = false;
 		this.ResourceDescriptionColumn2.Add (this.TTLFieldContainer);
-		global::Gtk.Box.BoxChild w39 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn2 [this.TTLFieldContainer]));
-		w39.Position = 7;
-		w39.Expand = false;
-		w39.Fill = false;
+		global::Gtk.Box.BoxChild w31 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn2 [this.TTLFieldContainer]));
+		w31.Position = 7;
+		w31.Expand = false;
+		w31.Fill = false;
 		this.ResourceDescriptionContainer.Add (this.ResourceDescriptionColumn2);
-		global::Gtk.Box.BoxChild w40 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionContainer [this.ResourceDescriptionColumn2]));
-		w40.Position = 1;
-		w40.Expand = false;
-		w40.Fill = false;
-		w40.Padding = ((uint)(5));
+		global::Gtk.Box.BoxChild w32 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionContainer [this.ResourceDescriptionColumn2]));
+		w32.Position = 1;
+		w32.Expand = false;
+		w32.Fill = false;
+		w32.Padding = ((uint)(5));
 		// Container child ResourceDescriptionContainer.Gtk.Box+BoxChild
 		this.ResourceDescriptionColumn3 = new global::Gtk.VBox ();
 		this.ResourceDescriptionColumn3.Name = "ResourceDescriptionColumn3";
@@ -522,21 +457,125 @@ public partial class MainWindow
 		// Container child ResourceDescriptionColumn3.Gtk.Box+BoxChild
 		this.lbl_SubmitterType = new global::Gtk.Label ();
 		this.lbl_SubmitterType.Name = "lbl_SubmitterType";
-		this.lbl_SubmitterType.LabelProp = global::Mono.Unix.Catalog.GetString ("label31");
+		this.lbl_SubmitterType.Xalign = 0F;
+		this.lbl_SubmitterType.LabelProp = global::Mono.Unix.Catalog.GetString ("*Submitter Type:");
 		this.ResourceDescriptionColumn3.Add (this.lbl_SubmitterType);
-		global::Gtk.Box.BoxChild w41 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn3 [this.lbl_SubmitterType]));
-		w41.Position = 0;
+		global::Gtk.Box.BoxChild w33 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn3 [this.lbl_SubmitterType]));
+		w33.Position = 0;
+		w33.Expand = false;
+		w33.Fill = false;
+		// Container child ResourceDescriptionColumn3.Gtk.Box+BoxChild
+		this.SubmitterTypeComboBox = global::Gtk.ComboBox.NewText ();
+		this.SubmitterTypeComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("Anonymous"));
+		this.SubmitterTypeComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("User"));
+		this.SubmitterTypeComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("Agent"));
+		this.SubmitterTypeComboBox.Name = "SubmitterTypeComboBox";
+		this.SubmitterTypeComboBox.Active = 0;
+		this.ResourceDescriptionColumn3.Add (this.SubmitterTypeComboBox);
+		global::Gtk.Box.BoxChild w34 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn3 [this.SubmitterTypeComboBox]));
+		w34.Position = 1;
+		w34.Expand = false;
+		w34.Fill = false;
+		// Container child ResourceDescriptionColumn3.Gtk.Box+BoxChild
+		this.SubmitterNameContainer = new global::Gtk.VBox ();
+		this.SubmitterNameContainer.Name = "SubmitterNameContainer";
+		this.SubmitterNameContainer.Spacing = 6;
+		// Container child SubmitterNameContainer.Gtk.Box+BoxChild
+		this.lbl_SubmitterName = new global::Gtk.Label ();
+		this.lbl_SubmitterName.Name = "lbl_SubmitterName";
+		this.lbl_SubmitterName.Xalign = 0F;
+		this.lbl_SubmitterName.LabelProp = global::Mono.Unix.Catalog.GetString ("*Submitter Name:");
+		this.SubmitterNameContainer.Add (this.lbl_SubmitterName);
+		global::Gtk.Box.BoxChild w35 = ((global::Gtk.Box.BoxChild)(this.SubmitterNameContainer [this.lbl_SubmitterName]));
+		w35.Position = 0;
+		w35.Expand = false;
+		w35.Fill = false;
+		// Container child SubmitterNameContainer.Gtk.Box+BoxChild
+		this.SubmitterNameTextBox = new global::Gtk.Entry ();
+		this.SubmitterNameTextBox.CanFocus = true;
+		this.SubmitterNameTextBox.Name = "SubmitterNameTextBox";
+		this.SubmitterNameTextBox.IsEditable = true;
+		this.SubmitterNameTextBox.InvisibleChar = '●';
+		this.SubmitterNameContainer.Add (this.SubmitterNameTextBox);
+		global::Gtk.Box.BoxChild w36 = ((global::Gtk.Box.BoxChild)(this.SubmitterNameContainer [this.SubmitterNameTextBox]));
+		w36.Position = 1;
+		w36.Expand = false;
+		w36.Fill = false;
+		this.ResourceDescriptionColumn3.Add (this.SubmitterNameContainer);
+		global::Gtk.Box.BoxChild w37 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn3 [this.SubmitterNameContainer]));
+		w37.Position = 2;
+		w37.Expand = false;
+		w37.Fill = false;
+		// Container child ResourceDescriptionColumn3.Gtk.Box+BoxChild
+		this.lbl_Curator = new global::Gtk.Label ();
+		this.lbl_Curator.Name = "lbl_Curator";
+		this.lbl_Curator.Xalign = 0F;
+		this.lbl_Curator.LabelProp = global::Mono.Unix.Catalog.GetString ("Curator:");
+		this.ResourceDescriptionColumn3.Add (this.lbl_Curator);
+		global::Gtk.Box.BoxChild w38 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn3 [this.lbl_Curator]));
+		w38.Position = 3;
+		w38.Expand = false;
+		w38.Fill = false;
+		// Container child ResourceDescriptionColumn3.Gtk.Box+BoxChild
+		this.CuratorTextBox = new global::Gtk.Entry ();
+		this.CuratorTextBox.CanFocus = true;
+		this.CuratorTextBox.Name = "CuratorTextBox";
+		this.CuratorTextBox.IsEditable = true;
+		this.CuratorTextBox.InvisibleChar = '●';
+		this.ResourceDescriptionColumn3.Add (this.CuratorTextBox);
+		global::Gtk.Box.BoxChild w39 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn3 [this.CuratorTextBox]));
+		w39.Position = 4;
+		w39.Expand = false;
+		w39.Fill = false;
+		// Container child ResourceDescriptionColumn3.Gtk.Box+BoxChild
+		this.lbl_Owner = new global::Gtk.Label ();
+		this.lbl_Owner.Name = "lbl_Owner";
+		this.lbl_Owner.Xalign = 0F;
+		this.lbl_Owner.LabelProp = global::Mono.Unix.Catalog.GetString ("Owner:");
+		this.ResourceDescriptionColumn3.Add (this.lbl_Owner);
+		global::Gtk.Box.BoxChild w40 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn3 [this.lbl_Owner]));
+		w40.Position = 5;
+		w40.Expand = false;
+		w40.Fill = false;
+		// Container child ResourceDescriptionColumn3.Gtk.Box+BoxChild
+		this.OwnerTextBox = new global::Gtk.Entry ();
+		this.OwnerTextBox.CanFocus = true;
+		this.OwnerTextBox.Name = "OwnerTextBox";
+		this.OwnerTextBox.IsEditable = true;
+		this.OwnerTextBox.InvisibleChar = '●';
+		this.ResourceDescriptionColumn3.Add (this.OwnerTextBox);
+		global::Gtk.Box.BoxChild w41 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn3 [this.OwnerTextBox]));
+		w41.Position = 6;
 		w41.Expand = false;
 		w41.Fill = false;
-		this.ResourceDescriptionContainer.Add (this.ResourceDescriptionColumn3);
-		global::Gtk.Box.BoxChild w42 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionContainer [this.ResourceDescriptionColumn3]));
-		w42.Position = 2;
+		// Container child ResourceDescriptionColumn3.Gtk.Box+BoxChild
+		this.lbl_Signer = new global::Gtk.Label ();
+		this.lbl_Signer.Name = "lbl_Signer";
+		this.lbl_Signer.Xalign = 0F;
+		this.lbl_Signer.LabelProp = global::Mono.Unix.Catalog.GetString ("Signer:");
+		this.ResourceDescriptionColumn3.Add (this.lbl_Signer);
+		global::Gtk.Box.BoxChild w42 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn3 [this.lbl_Signer]));
+		w42.Position = 7;
 		w42.Expand = false;
 		w42.Fill = false;
-		w42.Padding = ((uint)(10));
+		// Container child ResourceDescriptionColumn3.Gtk.Box+BoxChild
+		this.SignerTextBox = new global::Gtk.Entry ();
+		this.SignerTextBox.CanFocus = true;
+		this.SignerTextBox.Name = "SignerTextBox";
+		this.SignerTextBox.IsEditable = true;
+		this.SignerTextBox.InvisibleChar = '●';
+		this.ResourceDescriptionColumn3.Add (this.SignerTextBox);
+		global::Gtk.Box.BoxChild w43 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionColumn3 [this.SignerTextBox]));
+		w43.Position = 8;
+		w43.Expand = false;
+		w43.Fill = false;
+		this.ResourceDescriptionContainer.Add (this.ResourceDescriptionColumn3);
+		global::Gtk.Box.BoxChild w44 = ((global::Gtk.Box.BoxChild)(this.ResourceDescriptionContainer [this.ResourceDescriptionColumn3]));
+		w44.Position = 2;
+		w44.Expand = false;
+		w44.Fill = false;
+		w44.Padding = ((uint)(10));
 		this.RootNotebook.Add (this.ResourceDescriptionContainer);
-		global::Gtk.Notebook.NotebookChild w43 = ((global::Gtk.Notebook.NotebookChild)(this.RootNotebook [this.ResourceDescriptionContainer]));
-		w43.Position = 1;
 		// Notebook tab
 		this.lbl_nb_ResourceDescription = new global::Gtk.Label ();
 		this.lbl_nb_ResourceDescription.Name = "lbl_nb_ResourceDescription";
@@ -554,10 +593,10 @@ public partial class MainWindow
 		this.lbl_TermsOfServiceUrl.Xalign = 0F;
 		this.lbl_TermsOfServiceUrl.LabelProp = global::Mono.Unix.Catalog.GetString ("Terms of Service Url:");
 		this.TermsOfServiceContainer.Add (this.lbl_TermsOfServiceUrl);
-		global::Gtk.Box.BoxChild w44 = ((global::Gtk.Box.BoxChild)(this.TermsOfServiceContainer [this.lbl_TermsOfServiceUrl]));
-		w44.Position = 0;
-		w44.Expand = false;
-		w44.Fill = false;
+		global::Gtk.Box.BoxChild w46 = ((global::Gtk.Box.BoxChild)(this.TermsOfServiceContainer [this.lbl_TermsOfServiceUrl]));
+		w46.Position = 0;
+		w46.Expand = false;
+		w46.Fill = false;
 		// Container child TermsOfServiceContainer.Gtk.Box+BoxChild
 		this.TermsOfServiceTextBox = new global::Gtk.Entry ();
 		this.TermsOfServiceTextBox.CanFocus = true;
@@ -565,20 +604,20 @@ public partial class MainWindow
 		this.TermsOfServiceTextBox.IsEditable = true;
 		this.TermsOfServiceTextBox.InvisibleChar = '●';
 		this.TermsOfServiceContainer.Add (this.TermsOfServiceTextBox);
-		global::Gtk.Box.BoxChild w45 = ((global::Gtk.Box.BoxChild)(this.TermsOfServiceContainer [this.TermsOfServiceTextBox]));
-		w45.Position = 1;
-		w45.Expand = false;
-		w45.Fill = false;
+		global::Gtk.Box.BoxChild w47 = ((global::Gtk.Box.BoxChild)(this.TermsOfServiceContainer [this.TermsOfServiceTextBox]));
+		w47.Position = 1;
+		w47.Expand = false;
+		w47.Fill = false;
 		// Container child TermsOfServiceContainer.Gtk.Box+BoxChild
 		this.lbl_AttributionStatement = new global::Gtk.Label ();
 		this.lbl_AttributionStatement.Name = "lbl_AttributionStatement";
 		this.lbl_AttributionStatement.Xalign = 0F;
 		this.lbl_AttributionStatement.LabelProp = global::Mono.Unix.Catalog.GetString ("Attribution Statement:");
 		this.TermsOfServiceContainer.Add (this.lbl_AttributionStatement);
-		global::Gtk.Box.BoxChild w46 = ((global::Gtk.Box.BoxChild)(this.TermsOfServiceContainer [this.lbl_AttributionStatement]));
-		w46.Position = 2;
-		w46.Expand = false;
-		w46.Fill = false;
+		global::Gtk.Box.BoxChild w48 = ((global::Gtk.Box.BoxChild)(this.TermsOfServiceContainer [this.lbl_AttributionStatement]));
+		w48.Position = 2;
+		w48.Expand = false;
+		w48.Fill = false;
 		// Container child TermsOfServiceContainer.Gtk.Box+BoxChild
 		this.GtkScrolledWindow = new global::Gtk.ScrolledWindow ();
 		this.GtkScrolledWindow.Name = "GtkScrolledWindow";
@@ -589,11 +628,11 @@ public partial class MainWindow
 		this.AttributionStatementTextView.Name = "AttributionStatementTextView";
 		this.GtkScrolledWindow.Add (this.AttributionStatementTextView);
 		this.TermsOfServiceContainer.Add (this.GtkScrolledWindow);
-		global::Gtk.Box.BoxChild w48 = ((global::Gtk.Box.BoxChild)(this.TermsOfServiceContainer [this.GtkScrolledWindow]));
-		w48.Position = 3;
+		global::Gtk.Box.BoxChild w50 = ((global::Gtk.Box.BoxChild)(this.TermsOfServiceContainer [this.GtkScrolledWindow]));
+		w50.Position = 3;
 		this.RootNotebook.Add (this.TermsOfServiceContainer);
-		global::Gtk.Notebook.NotebookChild w49 = ((global::Gtk.Notebook.NotebookChild)(this.RootNotebook [this.TermsOfServiceContainer]));
-		w49.Position = 2;
+		global::Gtk.Notebook.NotebookChild w51 = ((global::Gtk.Notebook.NotebookChild)(this.RootNotebook [this.TermsOfServiceContainer]));
+		w51.Position = 1;
 		// Notebook tab
 		this.lbl_nb_TermsOfService = new global::Gtk.Label ();
 		this.lbl_nb_TermsOfService.Name = "lbl_nb_TermsOfService";
@@ -611,10 +650,10 @@ public partial class MainWindow
 		this.lbl_SignatureType.Xalign = 0F;
 		this.lbl_SignatureType.LabelProp = global::Mono.Unix.Catalog.GetString ("*Signature Type:");
 		this.SignatureInformationContainer.Add (this.lbl_SignatureType);
-		global::Gtk.Box.BoxChild w50 = ((global::Gtk.Box.BoxChild)(this.SignatureInformationContainer [this.lbl_SignatureType]));
-		w50.Position = 0;
-		w50.Expand = false;
-		w50.Fill = false;
+		global::Gtk.Box.BoxChild w52 = ((global::Gtk.Box.BoxChild)(this.SignatureInformationContainer [this.lbl_SignatureType]));
+		w52.Position = 0;
+		w52.Expand = false;
+		w52.Fill = false;
 		// Container child SignatureInformationContainer.Gtk.Box+BoxChild
 		this.SignatureTypeComboBox = global::Gtk.ComboBox.NewText ();
 		this.SignatureTypeComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("None"));
@@ -623,24 +662,165 @@ public partial class MainWindow
 		this.SignatureTypeComboBox.Name = "SignatureTypeComboBox";
 		this.SignatureTypeComboBox.Active = 0;
 		this.SignatureInformationContainer.Add (this.SignatureTypeComboBox);
-		global::Gtk.Box.BoxChild w51 = ((global::Gtk.Box.BoxChild)(this.SignatureInformationContainer [this.SignatureTypeComboBox]));
-		w51.Position = 1;
-		w51.Expand = false;
-		w51.Fill = false;
+		global::Gtk.Box.BoxChild w53 = ((global::Gtk.Box.BoxChild)(this.SignatureInformationContainer [this.SignatureTypeComboBox]));
+		w53.Position = 1;
+		w53.Expand = false;
+		w53.Fill = false;
 		this.RootNotebook.Add (this.SignatureInformationContainer);
-		global::Gtk.Notebook.NotebookChild w52 = ((global::Gtk.Notebook.NotebookChild)(this.RootNotebook [this.SignatureInformationContainer]));
-		w52.Position = 3;
+		global::Gtk.Notebook.NotebookChild w54 = ((global::Gtk.Notebook.NotebookChild)(this.RootNotebook [this.SignatureInformationContainer]));
+		w54.Position = 2;
 		// Notebook tab
 		this.lbl_nb_SignatureInformation = new global::Gtk.Label ();
 		this.lbl_nb_SignatureInformation.Name = "lbl_nb_SignatureInformation";
 		this.lbl_nb_SignatureInformation.LabelProp = global::Mono.Unix.Catalog.GetString ("Signature Information");
 		this.RootNotebook.SetTabLabel (this.SignatureInformationContainer, this.lbl_nb_SignatureInformation);
 		this.lbl_nb_SignatureInformation.ShowAll ();
+		// Container child RootNotebook.Gtk.Notebook+NotebookChild
+		this.NodeInformationContainer = new global::Gtk.HBox ();
+		this.NodeInformationContainer.Name = "NodeInformationContainer";
+		this.NodeInformationContainer.Spacing = 6;
+		this.NodeInformationContainer.BorderWidth = ((uint)(9));
+		// Container child NodeInformationContainer.Gtk.Box+BoxChild
+		this.NodeInfoColumn = new global::Gtk.VBox ();
+		this.NodeInfoColumn.Name = "NodeInfoColumn";
+		this.NodeInfoColumn.Spacing = 6;
+		// Container child NodeInfoColumn.Gtk.Box+BoxChild
+		this.lbl_NodeUrl = new global::Gtk.Label ();
+		this.lbl_NodeUrl.Name = "lbl_NodeUrl";
+		this.lbl_NodeUrl.Xalign = 0F;
+		this.lbl_NodeUrl.LabelProp = global::Mono.Unix.Catalog.GetString ("*Node Url:");
+		this.NodeInfoColumn.Add (this.lbl_NodeUrl);
+		global::Gtk.Box.BoxChild w55 = ((global::Gtk.Box.BoxChild)(this.NodeInfoColumn [this.lbl_NodeUrl]));
+		w55.Position = 0;
+		w55.Expand = false;
+		w55.Fill = false;
+		// Container child NodeInfoColumn.Gtk.Box+BoxChild
+		this.NodeUrlTextContainer = new global::Gtk.HBox ();
+		this.NodeUrlTextContainer.Name = "NodeUrlTextContainer";
+		this.NodeUrlTextContainer.Spacing = 6;
+		// Container child NodeUrlTextContainer.Gtk.Box+BoxChild
+		this.lbl_http = new global::Gtk.Label ();
+		this.lbl_http.Name = "lbl_http";
+		this.lbl_http.LabelProp = global::Mono.Unix.Catalog.GetString ("http://");
+		this.NodeUrlTextContainer.Add (this.lbl_http);
+		global::Gtk.Box.BoxChild w56 = ((global::Gtk.Box.BoxChild)(this.NodeUrlTextContainer [this.lbl_http]));
+		w56.Position = 0;
+		w56.Expand = false;
+		w56.Fill = false;
+		// Container child NodeUrlTextContainer.Gtk.Box+BoxChild
+		this.NodeUrlTextBox = new global::Gtk.Entry ();
+		this.NodeUrlTextBox.CanFocus = true;
+		this.NodeUrlTextBox.Name = "NodeUrlTextBox";
+		this.NodeUrlTextBox.IsEditable = true;
+		this.NodeUrlTextBox.InvisibleChar = '●';
+		this.NodeUrlTextContainer.Add (this.NodeUrlTextBox);
+		global::Gtk.Box.BoxChild w57 = ((global::Gtk.Box.BoxChild)(this.NodeUrlTextContainer [this.NodeUrlTextBox]));
+		w57.Position = 1;
+		// Container child NodeUrlTextContainer.Gtk.Box+BoxChild
+		this.lbl_trailingSlash = new global::Gtk.Label ();
+		this.lbl_trailingSlash.Name = "lbl_trailingSlash";
+		this.lbl_trailingSlash.LabelProp = global::Mono.Unix.Catalog.GetString ("/");
+		this.NodeUrlTextContainer.Add (this.lbl_trailingSlash);
+		global::Gtk.Box.BoxChild w58 = ((global::Gtk.Box.BoxChild)(this.NodeUrlTextContainer [this.lbl_trailingSlash]));
+		w58.Position = 2;
+		w58.Expand = false;
+		w58.Fill = false;
+		this.NodeInfoColumn.Add (this.NodeUrlTextContainer);
+		global::Gtk.Box.BoxChild w59 = ((global::Gtk.Box.BoxChild)(this.NodeInfoColumn [this.NodeUrlTextContainer]));
+		w59.Position = 1;
+		w59.Expand = false;
+		w59.Fill = false;
+		// Container child NodeInfoColumn.Gtk.Box+BoxChild
+		this.lbl_AuthType = new global::Gtk.Label ();
+		this.lbl_AuthType.Name = "lbl_AuthType";
+		this.lbl_AuthType.Xalign = 0F;
+		this.lbl_AuthType.LabelProp = global::Mono.Unix.Catalog.GetString ("Auth Type:");
+		this.NodeInfoColumn.Add (this.lbl_AuthType);
+		global::Gtk.Box.BoxChild w60 = ((global::Gtk.Box.BoxChild)(this.NodeInfoColumn [this.lbl_AuthType]));
+		w60.Position = 2;
+		w60.Expand = false;
+		w60.Fill = false;
+		// Container child NodeInfoColumn.Gtk.Box+BoxChild
+		this.AuthTypeComboBox = global::Gtk.ComboBox.NewText ();
+		this.AuthTypeComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("None"));
+		this.AuthTypeComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("HTTP Basic"));
+		this.AuthTypeComboBox.Name = "AuthTypeComboBox";
+		this.AuthTypeComboBox.Active = 0;
+		this.NodeInfoColumn.Add (this.AuthTypeComboBox);
+		global::Gtk.Box.BoxChild w61 = ((global::Gtk.Box.BoxChild)(this.NodeInfoColumn [this.AuthTypeComboBox]));
+		w61.Position = 3;
+		w61.Expand = false;
+		w61.Fill = false;
+		// Container child NodeInfoColumn.Gtk.Box+BoxChild
+		this.AuthCredentialsContainer = new global::Gtk.VBox ();
+		this.AuthCredentialsContainer.Name = "AuthCredentialsContainer";
+		this.AuthCredentialsContainer.Spacing = 6;
+		// Container child AuthCredentialsContainer.Gtk.Box+BoxChild
+		this.lbl_AuthUsername = new global::Gtk.Label ();
+		this.lbl_AuthUsername.Name = "lbl_AuthUsername";
+		this.lbl_AuthUsername.Xalign = 0F;
+		this.lbl_AuthUsername.LabelProp = global::Mono.Unix.Catalog.GetString ("Username:");
+		this.AuthCredentialsContainer.Add (this.lbl_AuthUsername);
+		global::Gtk.Box.BoxChild w62 = ((global::Gtk.Box.BoxChild)(this.AuthCredentialsContainer [this.lbl_AuthUsername]));
+		w62.Position = 0;
+		w62.Expand = false;
+		w62.Fill = false;
+		// Container child AuthCredentialsContainer.Gtk.Box+BoxChild
+		this.AuthUsernameTextBox = new global::Gtk.Entry ();
+		this.AuthUsernameTextBox.CanFocus = true;
+		this.AuthUsernameTextBox.Name = "AuthUsernameTextBox";
+		this.AuthUsernameTextBox.IsEditable = true;
+		this.AuthUsernameTextBox.InvisibleChar = '●';
+		this.AuthCredentialsContainer.Add (this.AuthUsernameTextBox);
+		global::Gtk.Box.BoxChild w63 = ((global::Gtk.Box.BoxChild)(this.AuthCredentialsContainer [this.AuthUsernameTextBox]));
+		w63.Position = 1;
+		w63.Expand = false;
+		w63.Fill = false;
+		// Container child AuthCredentialsContainer.Gtk.Box+BoxChild
+		this.lbl_AuthPassword = new global::Gtk.Label ();
+		this.lbl_AuthPassword.Name = "lbl_AuthPassword";
+		this.lbl_AuthPassword.Xalign = 0F;
+		this.lbl_AuthPassword.LabelProp = global::Mono.Unix.Catalog.GetString ("Password:");
+		this.AuthCredentialsContainer.Add (this.lbl_AuthPassword);
+		global::Gtk.Box.BoxChild w64 = ((global::Gtk.Box.BoxChild)(this.AuthCredentialsContainer [this.lbl_AuthPassword]));
+		w64.Position = 2;
+		w64.Expand = false;
+		w64.Fill = false;
+		// Container child AuthCredentialsContainer.Gtk.Box+BoxChild
+		this.AuthPasswordTextBox = new global::Gtk.Entry ();
+		this.AuthPasswordTextBox.CanFocus = true;
+		this.AuthPasswordTextBox.Name = "AuthPasswordTextBox";
+		this.AuthPasswordTextBox.IsEditable = true;
+		this.AuthPasswordTextBox.InvisibleChar = '●';
+		this.AuthCredentialsContainer.Add (this.AuthPasswordTextBox);
+		global::Gtk.Box.BoxChild w65 = ((global::Gtk.Box.BoxChild)(this.AuthCredentialsContainer [this.AuthPasswordTextBox]));
+		w65.Position = 3;
+		w65.Expand = false;
+		w65.Fill = false;
+		this.NodeInfoColumn.Add (this.AuthCredentialsContainer);
+		global::Gtk.Box.BoxChild w66 = ((global::Gtk.Box.BoxChild)(this.NodeInfoColumn [this.AuthCredentialsContainer]));
+		w66.Position = 4;
+		w66.Expand = false;
+		w66.Fill = false;
+		this.NodeInformationContainer.Add (this.NodeInfoColumn);
+		global::Gtk.Box.BoxChild w67 = ((global::Gtk.Box.BoxChild)(this.NodeInformationContainer [this.NodeInfoColumn]));
+		w67.Position = 0;
+		w67.Expand = false;
+		w67.Fill = false;
+		this.RootNotebook.Add (this.NodeInformationContainer);
+		global::Gtk.Notebook.NotebookChild w68 = ((global::Gtk.Notebook.NotebookChild)(this.RootNotebook [this.NodeInformationContainer]));
+		w68.Position = 3;
+		// Notebook tab
+		this.lbl_nb_NodeInformation = new global::Gtk.Label ();
+		this.lbl_nb_NodeInformation.Name = "lbl_nb_NodeInformation";
+		this.lbl_nb_NodeInformation.LabelProp = global::Mono.Unix.Catalog.GetString ("Node Information");
+		this.RootNotebook.SetTabLabel (this.NodeInformationContainer, this.lbl_nb_NodeInformation);
+		this.lbl_nb_NodeInformation.ShowAll ();
 		this.MainVerticalPane.Add (this.RootNotebook);
-		global::Gtk.Box.BoxChild w53 = ((global::Gtk.Box.BoxChild)(this.MainVerticalPane [this.RootNotebook]));
-		w53.Position = 1;
-		w53.Expand = false;
-		w53.Padding = ((uint)(10));
+		global::Gtk.Box.BoxChild w69 = ((global::Gtk.Box.BoxChild)(this.MainVerticalPane [this.RootNotebook]));
+		w69.Position = 1;
+		w69.Expand = false;
+		w69.Padding = ((uint)(10));
 		// Container child MainVerticalPane.Gtk.Box+BoxChild
 		this.RequiredFieldNotificationContainer = new global::Gtk.HBox ();
 		this.RequiredFieldNotificationContainer.Name = "RequiredFieldNotificationContainer";
@@ -652,14 +832,14 @@ public partial class MainWindow
 		this.lbl_requiredFieldsNotifier.LabelProp = global::Mono.Unix.Catalog.GetString ("Note: * indicates a required field");
 		this.lbl_requiredFieldsNotifier.Justify = ((global::Gtk.Justification)(1));
 		this.RequiredFieldNotificationContainer.Add (this.lbl_requiredFieldsNotifier);
-		global::Gtk.Box.BoxChild w54 = ((global::Gtk.Box.BoxChild)(this.RequiredFieldNotificationContainer [this.lbl_requiredFieldsNotifier]));
-		w54.Position = 2;
-		w54.Padding = ((uint)(5));
+		global::Gtk.Box.BoxChild w70 = ((global::Gtk.Box.BoxChild)(this.RequiredFieldNotificationContainer [this.lbl_requiredFieldsNotifier]));
+		w70.Position = 2;
+		w70.Padding = ((uint)(5));
 		this.MainVerticalPane.Add (this.RequiredFieldNotificationContainer);
-		global::Gtk.Box.BoxChild w55 = ((global::Gtk.Box.BoxChild)(this.MainVerticalPane [this.RequiredFieldNotificationContainer]));
-		w55.Position = 2;
-		w55.Expand = false;
-		w55.Fill = false;
+		global::Gtk.Box.BoxChild w71 = ((global::Gtk.Box.BoxChild)(this.MainVerticalPane [this.RequiredFieldNotificationContainer]));
+		w71.Position = 2;
+		w71.Expand = false;
+		w71.Fill = false;
 		// Container child MainVerticalPane.Gtk.Box+BoxChild
 		this.lbl_ConsoleOutput = new global::Gtk.Label ();
 		this.lbl_ConsoleOutput.Name = "lbl_ConsoleOutput";
@@ -667,10 +847,10 @@ public partial class MainWindow
 		this.lbl_ConsoleOutput.LabelProp = global::Mono.Unix.Catalog.GetString ("Console Output:");
 		this.lbl_ConsoleOutput.UseMarkup = true;
 		this.MainVerticalPane.Add (this.lbl_ConsoleOutput);
-		global::Gtk.Box.BoxChild w56 = ((global::Gtk.Box.BoxChild)(this.MainVerticalPane [this.lbl_ConsoleOutput]));
-		w56.Position = 3;
-		w56.Expand = false;
-		w56.Fill = false;
+		global::Gtk.Box.BoxChild w72 = ((global::Gtk.Box.BoxChild)(this.MainVerticalPane [this.lbl_ConsoleOutput]));
+		w72.Position = 3;
+		w72.Expand = false;
+		w72.Fill = false;
 		// Container child MainVerticalPane.Gtk.Box+BoxChild
 		this.ConsoleContainer = new global::Gtk.ScrolledWindow ();
 		this.ConsoleContainer.Name = "ConsoleContainer";
@@ -681,23 +861,32 @@ public partial class MainWindow
 		this.ConsoleWindow.Name = "ConsoleWindow";
 		this.ConsoleWindow.Editable = false;
 		this.ConsoleWindow.CursorVisible = false;
+		this.ConsoleWindow.WrapMode = ((global::Gtk.WrapMode)(1));
 		this.ConsoleContainer.Add (this.ConsoleWindow);
 		this.MainVerticalPane.Add (this.ConsoleContainer);
-		global::Gtk.Box.BoxChild w58 = ((global::Gtk.Box.BoxChild)(this.MainVerticalPane [this.ConsoleContainer]));
-		w58.Position = 4;
+		global::Gtk.Box.BoxChild w74 = ((global::Gtk.Box.BoxChild)(this.MainVerticalPane [this.ConsoleContainer]));
+		w74.Position = 4;
 		this.Add (this.MainVerticalPane);
 		if ((this.Child != null)) {
 			this.Child.ShowAll ();
 		}
-		this.DefaultWidth = 594;
+		this.DefaultWidth = 639;
 		this.DefaultHeight = 567;
-		this.AuthCredentialsContainer.Hide ();
 		this.PayloadLocatorContainer.Hide ();
+		this.PayloadEditorButtonBox.Hide ();
+		this.SubmitterNameContainer.Hide ();
+		this.AuthCredentialsContainer.Hide ();
 		this.Show ();
 		this.DeleteEvent += new global::Gtk.DeleteEventHandler (this.OnDeleteEvent);
 		this.OpenResourceDescriptionAction.Activated += new global::System.EventHandler (this.LoadResourceDescriptionDocument);
 		this.SaveResourceDescriptionAction.Activated += new global::System.EventHandler (this.SaveResourceDescriptionDocument);
-		this.AuthTypeComboBox.Changed += new global::System.EventHandler (this.HandleAuthTypeChanged);
+		this.PublishCurrentDocumentAction.Activated += new global::System.EventHandler (this.PublishDocument);
+		this.NewAction.Activated += new global::System.EventHandler (this.ResetFields);
 		this.PayloadPlacementComboBox.Changed += new global::System.EventHandler (this.UpdatePayloadChooseContainer);
+		this.PayloadFileChooser.SelectionChanged += new global::System.EventHandler (this.OnPayloadFileChooserSelectionChanged);
+		this.EditPayloadButton.Clicked += new global::System.EventHandler (this.CreateEditPayloadPopup);
+		this.ChoosePayloadFileButton.Clicked += new global::System.EventHandler (this.ChooseNewPayloadFile);
+		this.SubmitterTypeComboBox.Changed += new global::System.EventHandler (this.UpdateSubmitterNameVisibility);
+		this.AuthTypeComboBox.Changed += new global::System.EventHandler (this.HandleAuthTypeChanged);
 	}
 }
