@@ -64,9 +64,10 @@ public partial class MainWindow: Gtk.Window
 		{
 			this.PayloadLocatorContainer.Visible = false;
 			this.PayloadFileContainer.Visible = true;
-		} else if (selectedVal == PayloadPlacement.linked && this.PayloadFileContainer.Visible)
+		} else if (selectedVal == PayloadPlacement.linked)
 		{
 			this.PayloadFileContainer.Visible = false;
+			this.PayloadEditorButtonBox.Visible = false;
 			this.PayloadLocatorContainer.Visible = true;
 		}
 	}
