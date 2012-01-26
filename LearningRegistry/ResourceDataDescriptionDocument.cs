@@ -31,9 +31,15 @@ namespace LearningRegistry
 		
         public string Bencode()
         {
-            Dictionary<string, object> dictionary = new Dictionary<string, object>();
-            this.serialize(dictionary,null);
-            Bencoding.BElement bencoded = bencode(dictionary);
+            JavaScriptSerializer ser = new JavaScriptSerializer();
+			var json = ser.Serialize(this);
+			
+			// Deserialize into a dictionary and remove
+			// empty attributes
+			var jsonDict = ser.Deserialize<Dictionary<string, object>>(json);
+			removeEmptyFields(ref jsonDict);
+			
+            Bencoding.BElement bencoded = bencode(jsonDict);
             string b = bencoded.ToBencodedString();
             return b;
         }
@@ -323,9 +329,6 @@ namespace LearningRegistry
 						removeEmptyFields(ref dictObj);
 				} else if (listObj != null)
 				{
-					// This will need to be changed if we ever have
-					// non-string arrays (which is currently
-					// the scope of the spec's array implementations)
 					ArrayList newList = new ArrayList();
 					foreach(object li in listObj)
 					{
@@ -505,6 +508,7 @@ namespace LearningRegistry
         {
             public string signature;
             public List<string> key_location;
+			[RequiredField]
             public string signing_method;
 
             public lr_digital_signature()
@@ -520,6 +524,7 @@ namespace LearningRegistry
             public string owner;
             public string submitter;
             public string signer;
+			[RequiredField]
             public string submitter_type;
             public lr_identity()
             {
@@ -581,34 +586,52 @@ namespace LearningRegistry
 			
           //  [DataMember]
           //  public lr_TOS TOS;
+			[RequiredField]
             [DataMember]
             public Boolean active;
+			
+			[RequiredField]
             [DataMember]
             public String doc_type;
+			
+			[RequiredField]
             [DataMember]
             public String doc_version;
-            [DataMember]
-            public lr_identity identity;
-            [DataMember]
-            public List<string> keys;			
-			[DataMember]
-            public String payload_placement;			
+			
+			[RequiredField]
             [DataMember]
             public List<string> payload_schema;
+			
+			[RequiredField]
+			[DataMember]
+            public String resource_data_type;
+			
+			[RequiredField]
+			[DataMember]
+            public String resource_locator;
+			
+            [DataMember]
+            public lr_identity identity;
+			
+            [DataMember]
+            public List<string> keys;		
+			
+			[DataMember]
+            public String payload_placement;
+			
             [DataMember]
             public Object resource_data;
-            [DataMember]
-            public String resource_data_type;
-            [DataMember]
-            public String resource_locator;
+			
             [DataMember]
             public String payload_schema_locator;
+			
             [DataMember]
             public String payload_schema_format;
+			
             [DataMember]
             public String payload_locator;
+			
 			[DataMember]
-			[ScriptIgnore]
 			public String doc_ID;
 			
 			[DataMember]

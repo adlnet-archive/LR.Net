@@ -2,9 +2,9 @@ using System;
 
 namespace LearningRegistry
 {
-	public class RequiredFieldAttribute
+	public class RequiredField : Attribute
 	{
-		public RequiredFieldAttribute ()
+		public RequiredField ()
 		{
 		}
 	}

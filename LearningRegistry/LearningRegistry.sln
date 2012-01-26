@@ -5,8 +5,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningRegistry", "Learnin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LRTest", "LRTest\LRTest.csproj", "{5E892917-C700-4D2E-B3D5-1E3186BBC57F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "..\ConsoleApplication1\ConsoleApplication1.csproj", "{0C543ACA-2DAF-4882-AC87-D2611C5581CD}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublishGUI", "PublishGUI\PublishGUI.csproj", "{4F7F8D9D-0C67-41C0-8624-0E567294491F}"
 EndProject
 Global

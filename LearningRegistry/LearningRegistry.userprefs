@@ -1,41 +1,39 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="PublishGUI\MainWindow.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|Mixed Platforms" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="PublishGUI\CsvToLrWindow.cs">
     <Files>
       <File FileName="PublishGUI\Main.cs" Line="1" Column="1" />
-      <File FileName="PublishGUI\MainWindow.cs" Line="98" Column="49" />
-      <File FileName="ResourceDataDescriptionDocument.cs" Line="705" Column="25" />
+      <File FileName="PublishGUI\MainWindow.cs" Line="464" Column="8" />
+      <File FileName="ResourceDataDescriptionDocument.cs" Line="340" Column="8" />
       <File FileName="Taxonomies.cs" Line="30" Column="4" />
-      <File FileName="LRUtils.cs" Line="26" Column="62" />
+      <File FileName="LRUtils.cs" Line="14" Column="4" />
+      <File FileName="LRClient.cs" Line="1" Column="1" />
+      <File FileName="c:\dev\LR.Net\LearningRegistry\Paradata.cs" Line="89" Column="38" />
+      <File FileName="CryptoUtils.cs" Line="33" Column="36" />
+      <File FileName="PublishGUI\CsvToLrMapRow.cs" Line="24" Column="1" />
+      <File FileName="PublishGUI\CsvToLrWindow.cs" Line="42" Column="4" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="LearningRegistry" expanded="True">
             <Node name="References" expanded="True" />
-            <Node name="Properties" expanded="True" />
           </Node>
           <Node name="LRTest" expanded="True" />
           <Node name="PublishGUI" expanded="True">
-            <Node name="References" expanded="True" />
             <Node name="UserInterface" expanded="True" />
-            <Node name="MainWindow.cs" selected="True" />
           </Node>
         </State>
       </Pad>
       <Pad Id="ClassPad">
         <State expanded="True" selected="True">
-          <Node name="ConsoleApplication1" expanded="True" />
           <Node name="LearningRegistry" expanded="True" />
           <Node name="LRTest" expanded="True" />
         </State>
       </Pad>
       <Pad Id="MonoDevelop.Debugger.WatchPad">
         <State>
-          <Value>stringObj</Value>
-          <Value>dictObj</Value>
           <Value>key</Value>
-          <Value>item["keys"]</Value>
         </State>
       </Pad>
       <Pad Id="MonoDevelop.NUnit.TestPad">

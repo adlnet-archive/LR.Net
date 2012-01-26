@@ -11,6 +11,7 @@ public partial class MainWindow
 	private global::Gtk.Action PublishCurrentDocumentAction;
 	private global::Gtk.Action PublishFromFolderAction;
 	private global::Gtk.Action NewAction;
+	private global::Gtk.Action PublishFromCSVAction;
 	private global::Gtk.VBox MainVerticalPane;
 	private global::Gtk.MenuBar menubar1;
 	private global::Gtk.Notebook RootNotebook;
@@ -117,6 +118,9 @@ public partial class MainWindow
 		this.NewAction = new global::Gtk.Action ("NewAction", global::Mono.Unix.Catalog.GetString ("New"), null, null);
 		this.NewAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("New");
 		w1.Add (this.NewAction, null);
+		this.PublishFromCSVAction = new global::Gtk.Action ("PublishFromCSVAction", global::Mono.Unix.Catalog.GetString ("Publish From CSV"), null, null);
+		this.PublishFromCSVAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Publish From CSV");
+		w1.Add (this.PublishFromCSVAction, null);
 		this.UIManager.InsertActionGroup (w1, 0);
 		this.AddAccelGroup (this.UIManager.AccelGroup);
 		this.Name = "MainWindow";
@@ -128,7 +132,7 @@ public partial class MainWindow
 		this.MainVerticalPane.Spacing = 6;
 		this.MainVerticalPane.BorderWidth = ((uint)(6));
 		// Container child MainVerticalPane.Gtk.Box+BoxChild
-		this.UIManager.AddUiFromString (@"<ui><menubar name='menubar1'><menu name='FileAction' action='FileAction'><menuitem name='NewAction' action='NewAction'/><menuitem name='OpenResourceDescriptionAction' action='OpenResourceDescriptionAction'/><menuitem name='SaveResourceDescriptionAction' action='SaveResourceDescriptionAction'/></menu><menu name='PublishAction' action='PublishAction'><menuitem name='PublishCurrentDocumentAction' action='PublishCurrentDocumentAction'/><menuitem name='PublishFromFolderAction' action='PublishFromFolderAction'/></menu></menubar></ui>");
+		this.UIManager.AddUiFromString (@"<ui><menubar name='menubar1'><menu name='FileAction' action='FileAction'><menuitem name='NewAction' action='NewAction'/><menuitem name='OpenResourceDescriptionAction' action='OpenResourceDescriptionAction'/><menuitem name='SaveResourceDescriptionAction' action='SaveResourceDescriptionAction'/></menu><menu name='PublishAction' action='PublishAction'><menuitem name='PublishCurrentDocumentAction' action='PublishCurrentDocumentAction'/><menuitem name='PublishFromFolderAction' action='PublishFromFolderAction'/><menuitem name='PublishFromCSVAction' action='PublishFromCSVAction'/></menu></menubar></ui>");
 		this.menubar1 = ((global::Gtk.MenuBar)(this.UIManager.GetWidget ("/menubar1")));
 		this.menubar1.Name = "menubar1";
 		this.MainVerticalPane.Add (this.menubar1);
@@ -882,6 +886,7 @@ public partial class MainWindow
 		this.SaveResourceDescriptionAction.Activated += new global::System.EventHandler (this.SaveResourceDescriptionDocument);
 		this.PublishCurrentDocumentAction.Activated += new global::System.EventHandler (this.PublishDocument);
 		this.NewAction.Activated += new global::System.EventHandler (this.ResetFields);
+		this.PublishFromCSVAction.Activated += new global::System.EventHandler (this.OnPublishFromCSVActionActivated);
 		this.PayloadPlacementComboBox.Changed += new global::System.EventHandler (this.UpdatePayloadChooseContainer);
 		this.PayloadFileChooser.SelectionChanged += new global::System.EventHandler (this.OnPayloadFileChooserSelectionChanged);
 		this.EditPayloadButton.Clicked += new global::System.EventHandler (this.CreateEditPayloadPopup);

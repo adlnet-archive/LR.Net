@@ -102,6 +102,7 @@ public partial class MainWindow: Gtk.Window
 			catch (Exception exception)
 			{
 				WriteLineToConsole("Publish failed! Reason:\n"+exception.Message);
+				WriteToConsole("Stack Trace:\n" + exception.StackTrace);
 			}
 		} else
 			ShowMissingFields();	
@@ -442,4 +443,29 @@ public partial class MainWindow: Gtk.Window
 		filter.AddPattern("*.json");
 		return filter;
 	}
+
+	protected void OnPublishFromCSVActionActivated (object sender, System.EventArgs e)
+	{
+		FileChooserDialog dialog = new FileChooserDialog("Load CSV", 
+		                                                 this,
+		                                                 FileChooserAction.Open,
+		                                                 "Cancel", ResponseType.Cancel,
+		                                                 "Open", ResponseType.Accept);
+		
+		FileFilter filter = new FileFilter();
+		filter.Name = "CSV files";
+		filter.AddMimeType("text/csv");
+		filter.AddPattern("*.csv");
+		dialog.AddFilter(filter);
+		
+		if(dialog.Run() == (int)ResponseType.Accept)
+		{
+			CsvToLrWindow csvWin = new CsvToLrWindow();
+			csvWin.PopulateFromCsv(dialog.Filename);
+			dialog.Destroy();
+			csvWin.ShowAll();
+		}
+	}
+	
+	
 }

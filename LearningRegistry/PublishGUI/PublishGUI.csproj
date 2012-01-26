@@ -51,6 +51,10 @@
     <Compile Include="gtk-gui\MainWindow.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="CsvToLrMapRow.cs" />
+    <Compile Include="CsvToLrWindow.cs" />
+    <Compile Include="gtk-gui\CsvToLrWindow.cs" />
+    <Compile Include="gtk-gui\CsvToLrMapRow.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
