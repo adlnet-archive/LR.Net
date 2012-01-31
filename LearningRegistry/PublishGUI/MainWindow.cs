@@ -5,44 +5,12 @@ using System.Linq;
 using Gtk;
 using LearningRegistry;
 using LearningRegistry.RDDD;
+using PublishGUI;
 
 public partial class MainWindow: Gtk.Window
 {	
 	
-	private enum PayloadPlacement
-	{
-		inline = 0,
-		linked
-	}
-	
-	private enum AuthType
-	{
-		None = 0,
-		Basic
-	}
-	
-	private enum SignatureType
-	{
-		None = 0,
-		LR_PGP,
-		X509
-	}
-	
-	private enum SubmitterType
-	{
-		anonymous = 0,
-		user = 1,
-		agent = 2
-	}
-	
-	private enum ResourceDataType
-	{
-		metadata = 0,
-		paradata,
-		resource,
-		assertion,
-		other
-	}
+
 	
 	protected string _resourceDataRaw { get; set; }
 	
@@ -82,11 +50,11 @@ public partial class MainWindow: Gtk.Window
 			lr_document doc = buildDoc();
 			lr_Envelope envelope = buildEnvelope(new List<lr_document>(){doc});
 			
-			var client = new LRClient("http://"+this.NodeUrlTextBox.Text);
-			if ((AuthType)this.AuthTypeComboBox.Active == AuthType.Basic)
+			var client = new LRClient(this.NodeInfo.NodeUrl);
+			if (this.NodeInfo.AuthenticationType == AuthType.Basic)
 			{
-				client.Username = this.AuthUsernameTextBox.Text;
-				client.Password = this.AuthPasswordTextBox.Text;
+				client.Username = this.NodeInfo.HttpUsername;
+				client.Password = this.NodeInfo.HttpPassword;
 			}
 			
 			WriteToConsole("Publishing envelope...");
@@ -106,13 +74,6 @@ public partial class MainWindow: Gtk.Window
 			}
 		} else
 			ShowMissingFields();	
-	}
-
-	protected void HandleAuthTypeChanged (object sender, System.EventArgs e)
-	{
-		AuthType selectedType = (AuthType)this.AuthTypeComboBox.Active;
-		this.AuthCredentialsContainer.Visible = 
-			selectedType == AuthType.Basic && !this.AuthCredentialsContainer.Visible;
 	}
 	
 	protected void ShowMissingFields()
@@ -376,14 +337,12 @@ public partial class MainWindow: Gtk.Window
 		this.AttributionStatementTextView.Buffer.Text = "";
 		this.SignatureTypeComboBox.Active = (int)SignatureType.None;
 		this.PayloadFileChooser.UnselectAll();
-		this.NodeUrlTextBox.Text = "";
-		this.AuthUsernameTextBox.Text = "";
-		this.AuthPasswordTextBox.Text = "";
+		this.NodeInfo.ResetFields();
 		
 		_resourceDataRaw = null;
 		UpdatePayloadChooseContainer(this, e);
 		UpdateSubmitterNameVisibility(this, e);
-		HandleAuthTypeChanged(this, e);
+		this.NodeInfo.HandleAuthTypeChanged(this, e);
 	}
 
 	protected void ChooseNewPayloadFile (object sender, System.EventArgs e)
@@ -449,7 +408,7 @@ public partial class MainWindow: Gtk.Window
 		FileChooserDialog dialog = new FileChooserDialog("Load CSV", 
 		                                                 this,
 		                                                 FileChooserAction.Open,
-		                                                 "Cancel", ResponseType.Cancel,
+		                                                 "Cancel", ResponseType.Close,
 		                                                 "Open", ResponseType.Accept);
 		
 		FileFilter filter = new FileFilter();
@@ -457,14 +416,16 @@ public partial class MainWindow: Gtk.Window
 		filter.AddMimeType("text/csv");
 		filter.AddPattern("*.csv");
 		dialog.AddFilter(filter);
-		
-		if(dialog.Run() == (int)ResponseType.Accept)
-		{
-			CsvToLrWindow csvWin = new CsvToLrWindow();
-			csvWin.PopulateFromCsv(dialog.Filename);
-			dialog.Destroy();
-			csvWin.ShowAll();
-		}
+
+        if (dialog.Run() == (int)ResponseType.Accept)
+        {
+            CsvToLrWindow csvWin = new CsvToLrWindow();
+            csvWin.PopulateFromCsv(dialog.Filename);
+            dialog.Destroy();
+            csvWin.ShowAll();
+        }
+        else
+            dialog.Destroy();
 	}
 	
 	

@@ -1,27 +1,23 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|Mixed Platforms" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="PublishGUI\CsvToLrWindow.cs">
     <Files>
-      <File FileName="PublishGUI\Main.cs" Line="1" Column="1" />
-      <File FileName="PublishGUI\MainWindow.cs" Line="464" Column="8" />
-      <File FileName="ResourceDataDescriptionDocument.cs" Line="340" Column="8" />
-      <File FileName="Taxonomies.cs" Line="30" Column="4" />
+      <File FileName="PublishGUI\Main.cs" Line="17" Column="1" />
+      <File FileName="PublishGUI\MainWindow.cs" Line="336" Column="36" />
+      <File FileName="ResourceDataDescriptionDocument.cs" Line="511" Column="19" />
       <File FileName="LRUtils.cs" Line="14" Column="4" />
-      <File FileName="LRClient.cs" Line="1" Column="1" />
-      <File FileName="c:\dev\LR.Net\LearningRegistry\Paradata.cs" Line="89" Column="38" />
-      <File FileName="CryptoUtils.cs" Line="33" Column="36" />
-      <File FileName="PublishGUI\CsvToLrMapRow.cs" Line="24" Column="1" />
-      <File FileName="PublishGUI\CsvToLrWindow.cs" Line="42" Column="4" />
+      <File FileName="PublishGUI\CsvToLrWindow.cs" Line="71" Column="1" />
+      <File FileName="PublishGUI\CsvToLrMapRow.cs" Line="25" Column="66" />
+      <File FileName="PublishGUI\NodeInfoWidget.cs" Line="12" Column="21" />
+      <File FileName="PublishGUI\Definitions.cs" Line="28" Column="12" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="LearningRegistry" expanded="True">
-            <Node name="References" expanded="True" />
-          </Node>
-          <Node name="LRTest" expanded="True" />
+          <Node name="LearningRegistry" expanded="True" />
           <Node name="PublishGUI" expanded="True">
             <Node name="UserInterface" expanded="True" />
+            <Node name="CsvToLrWindow.cs" selected="True" />
           </Node>
         </State>
       </Pad>
@@ -34,6 +30,7 @@
       <Pad Id="MonoDevelop.Debugger.WatchPad">
         <State>
           <Value>key</Value>
+          <Value>data</Value>
         </State>
       </Pad>
       <Pad Id="MonoDevelop.NUnit.TestPad">
@@ -42,7 +39,9 @@
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="C:\dev\LR.Net\LearningRegistry\PublishGUI\CsvToLrWindow.cs" line="124" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

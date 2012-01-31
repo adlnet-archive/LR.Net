@@ -3,8 +3,13 @@
 
 public partial class CsvToLrWindow
 {
-	private global::Gtk.VBox MapRowsContainer;
+	private global::Gtk.VBox RootContainer;
 	private global::Gtk.Label lbl_CsvInstructions;
+	private global::Gtk.HBox DataContainer;
+	private global::Gtk.VBox MapRowsContainer;
+	private global::Gtk.VBox PublishInfoContainer;
+	private global::NodeInfoWidget nodeinfowidget2;
+	private global::Gtk.Button CsvPublishButton;
 	
 	protected virtual void Build ()
 	{
@@ -14,10 +19,11 @@ public partial class CsvToLrWindow
 		this.Title = global::Mono.Unix.Catalog.GetString ("Import From CSV");
 		this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 		// Container child CsvToLrWindow.Gtk.Container+ContainerChild
-		this.MapRowsContainer = new global::Gtk.VBox ();
-		this.MapRowsContainer.Name = "MapRowsContainer";
-		this.MapRowsContainer.Spacing = 6;
-		// Container child MapRowsContainer.Gtk.Box+BoxChild
+		this.RootContainer = new global::Gtk.VBox ();
+		this.RootContainer.Name = "RootContainer";
+		this.RootContainer.Spacing = 6;
+		this.RootContainer.BorderWidth = ((uint)(6));
+		// Container child RootContainer.Gtk.Box+BoxChild
 		this.lbl_CsvInstructions = new global::Gtk.Label ();
 		this.lbl_CsvInstructions.WidthRequest = 500;
 		this.lbl_CsvInstructions.Name = "lbl_CsvInstructions";
@@ -27,17 +33,65 @@ public partial class CsvToLrWindow
 		this.lbl_CsvInstructions.LabelProp = global::Mono.Unix.Catalog.GetString ("For each item on the left, choose the approprate column from the csv file that co" +
 				"rresponds to the element of the resource description data model on the right:");
 		this.lbl_CsvInstructions.Wrap = true;
-		this.MapRowsContainer.Add (this.lbl_CsvInstructions);
-		global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.MapRowsContainer [this.lbl_CsvInstructions]));
+		this.RootContainer.Add (this.lbl_CsvInstructions);
+		global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.RootContainer [this.lbl_CsvInstructions]));
 		w1.Position = 0;
 		w1.Expand = false;
 		w1.Fill = false;
-		this.Add (this.MapRowsContainer);
+		// Container child RootContainer.Gtk.Box+BoxChild
+		this.DataContainer = new global::Gtk.HBox ();
+		this.DataContainer.Name = "DataContainer";
+		this.DataContainer.Spacing = 6;
+		// Container child DataContainer.Gtk.Box+BoxChild
+		this.MapRowsContainer = new global::Gtk.VBox ();
+		this.MapRowsContainer.Name = "MapRowsContainer";
+		this.MapRowsContainer.Spacing = 6;
+		this.DataContainer.Add (this.MapRowsContainer);
+		global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.DataContainer [this.MapRowsContainer]));
+		w2.Position = 0;
+		// Container child DataContainer.Gtk.Box+BoxChild
+		this.PublishInfoContainer = new global::Gtk.VBox ();
+		this.PublishInfoContainer.Name = "PublishInfoContainer";
+		this.PublishInfoContainer.Spacing = 6;
+		// Container child PublishInfoContainer.Gtk.Box+BoxChild
+		this.nodeinfowidget2 = new global::NodeInfoWidget ();
+		this.nodeinfowidget2.Events = ((global::Gdk.EventMask)(256));
+		this.nodeinfowidget2.Name = "nodeinfowidget2";
+		this.PublishInfoContainer.Add (this.nodeinfowidget2);
+		global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.PublishInfoContainer [this.nodeinfowidget2]));
+		w3.Position = 0;
+		w3.Expand = false;
+		w3.Fill = false;
+		// Container child PublishInfoContainer.Gtk.Box+BoxChild
+		this.CsvPublishButton = new global::Gtk.Button ();
+		this.CsvPublishButton.WidthRequest = 100;
+		this.CsvPublishButton.CanFocus = true;
+		this.CsvPublishButton.Name = "CsvPublishButton";
+		this.CsvPublishButton.UseUnderline = true;
+		this.CsvPublishButton.Label = global::Mono.Unix.Catalog.GetString ("Publish Documents");
+		this.PublishInfoContainer.Add (this.CsvPublishButton);
+		global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.PublishInfoContainer [this.CsvPublishButton]));
+		w4.Position = 1;
+		w4.Expand = false;
+		w4.Fill = false;
+		this.DataContainer.Add (this.PublishInfoContainer);
+		global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.DataContainer [this.PublishInfoContainer]));
+		w5.Position = 1;
+		w5.Expand = false;
+		w5.Fill = false;
+		w5.Padding = ((uint)(11));
+		this.RootContainer.Add (this.DataContainer);
+		global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.RootContainer [this.DataContainer]));
+		w6.Position = 1;
+		w6.Expand = false;
+		w6.Fill = false;
+		this.Add (this.RootContainer);
 		if ((this.Child != null)) {
 			this.Child.ShowAll ();
 		}
-		this.DefaultWidth = 500;
-		this.DefaultHeight = 300;
+		this.DefaultWidth = 749;
+		this.DefaultHeight = 398;
 		this.Show ();
+		this.CsvPublishButton.Clicked += new global::System.EventHandler (this.PublishDocuments);
 	}
 }
