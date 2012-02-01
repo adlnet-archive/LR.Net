@@ -16,8 +16,16 @@ public partial class CsvToLrWindow : Gtk.Window
     private Dictionary<string, List<string>> _rowData;
 
 	private string[] _columns;
-    private DataTable _table; 
-	
+    private DataTable _table;
+
+    List<Type> nestedTypes = new List<Type>()
+	{
+		typeof(lr_identity),
+		typeof(lr_TOS),
+		typeof(lr_digital_signature)
+	};
+
+
 	public CsvToLrWindow () : 
 			base(Gtk.WindowType.Toplevel)
 	{
@@ -32,12 +40,6 @@ public partial class CsvToLrWindow : Gtk.Window
 		FieldInfo[] infos = typeof(lr_document).GetFields();
 		foreach(var info in infos)
 		{
-			List<Type> nestedTypes = new List<Type>()
-			{
-				typeof(lr_identity),
-				typeof(lr_TOS),
-				typeof(lr_digital_signature)
-			};
 			if(nestedTypes.Contains(info.FieldType))
 			{
 				//Nesting only goes one level, which makes this work
@@ -63,33 +65,54 @@ public partial class CsvToLrWindow : Gtk.Window
 	
 	protected void PublishDocuments(object sender, EventArgs e)
 	{
+
+
 		//Input: rows
 		//Need to read each row in and store the value in a mapped list
 		//Output: map of column name to row value
 		//Create a dictionary map the columns
 		Dictionary<string, string> map = new Dictionary<string, string>();
-		foreach(CsvToLrMapRow row in MapRowsContainer.Children)
-			map[row.Key] = row.Value;
-		
-		List<Type> nestedTypes = new List<Type>()
-		{
-			typeof(lr_identity),
-			typeof(lr_TOS),
-			typeof(lr_digital_signature)
-		};
-		
+        FieldInfo[] infos = typeof(lr_document).GetFields();
+        int j = 0;
+		for(int i = 0; i < MapRowsContainer.Children.Length; i++)
+        {
+            var info = infos[j];
+            var mapRow = (CsvToLrMapRow)MapRowsContainer.Children[i];
+            if(nestedTypes.Contains(info.FieldType))
+            {
+                foreach (var subInfo in info.FieldType.GetFields())
+                {
+                    mapRow = (CsvToLrMapRow)MapRowsContainer.Children[i++];
+                    string key = String.Join(".", info.Name, subInfo.Name);
+                    map[key] = mapRow.DropDownValue;
+                }
+                j++;
+            } else
+                map[infos[j++].Name] = mapRow.DropDownValue;
+        }
+
 		//Create the docs from the map and the dataDict
 		lr_Envelope envelope = new lr_Envelope();
 		for(int i = 0; i < _rawRowDataList.Count; i++)
 		{
 			lr_document doc = new lr_document();
-			FieldInfo[] infos = typeof(lr_document).GetFields();
-			CsvToLrMapRow currentRow = (CsvToLrMapRow)MapRowsContainer.Children[i];
+            int rowIndex = 0;
 			foreach(var info in infos)
 			{
+                CsvToLrMapRow currentRow = (CsvToLrMapRow)MapRowsContainer.Children[rowIndex++];
+                if (currentRow.DropDownValue == null)
+                    continue; //Nothing to map to or assign if they did not choose a value from the dropdown
+
                 if (!nestedTypes.Contains(info.FieldType))
                 {
-                    string val = getNewDocValue(currentRow, _rawRowDataList[i], _rowData[map[info.Name]][i]);
+                    string val;
+                    if (currentRow.IsConstant)
+                        val = currentRow.ConstantValue;
+                    else if (currentRow.IsSerializeToRow)
+                        val = _rawRowDataList[i];
+                    else
+                        val = _rowData[map[info.Name]][i];
+
                     if (info.FieldType == typeof(List<string>))
                     {
                         List<string> vals = val.Split(',').ToList<string>();
@@ -133,7 +156,7 @@ public partial class CsvToLrWindow : Gtk.Window
     {
         string val;
         if (currentRow.IsConstant)
-            val = currentRow.Value;
+            val = currentRow.ConstantValue;
         else if (currentRow.IsSerializeToRow)
             val = rawRowData;
         else

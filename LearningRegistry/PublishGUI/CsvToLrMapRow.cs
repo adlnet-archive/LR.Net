@@ -7,11 +7,12 @@ using Gtk;
 [System.ComponentModel.ToolboxItem(true)]
 public partial class CsvToLrMapRow : Gtk.Bin
 {
-    private const string CONSTANT_VAL_TEXT = "<Constant Value>";
-    private const string ROW_AS_CSV_TEXT = "<Entire Row (as JSON)>";
+    public const string NO_VAL_TEXT = "Select Column...";
+    public const string CONSTANT_VAL_TEXT = "<Constant Value>";
+    public const string ROW_AS_CSV_TEXT = "<Entire Row (as JSON)>";
 	public string Key
 	{
-		get { return this.lbl_ResourceDataField.Text; }
+		get { return this.lbl_ResourceDataField.Text.Replace("*", ""); }
 	}
 	
 	private bool _isConstant;
@@ -20,29 +21,32 @@ public partial class CsvToLrMapRow : Gtk.Bin
     private bool _isSerializeToRow;
     public bool IsSerializeToRow { get { return _isSerializeToRow; } }
 
-	public string Value 
+    private IEnumerable _options;
+
+	public string DropDownValue 
 	{
 		get
 		{
-			if(_isConstant) 
-				return CustomValueEntry.Text;
-			else
-			{
 				//TODO: improve exception throwing/handling for empty columns
-				if(ColumnOptionsComboBox.Active == 0)
+				if(ColumnOptionsComboBox.Active == 0 || ColumnOptionsComboBox.Active > _options.Cast<string>().Count() - 3)
 					return null;//throw new NullReferenceException("No value was set for the column.");
 				return ColumnOptionsComboBox.ActiveText;
-			}
 		}
 	}
-	
+
+    public string ConstantValue
+    {
+        get { return this.CustomValueEntry.Text; }
+    }
+
 	public CsvToLrMapRow (IEnumerable options, string resourceDataDescriptionField)
 	{
 		this.Build ();
 		
-		ColumnOptionsComboBox.AppendText("Select Column...");
+		ColumnOptionsComboBox.AppendText(NO_VAL_TEXT);
 		foreach(string option in options)
 			this.ColumnOptionsComboBox.AppendText(option);
+        _options = options;
 		ColumnOptionsComboBox.AppendText(CONSTANT_VAL_TEXT);
         ColumnOptionsComboBox.AppendText(ROW_AS_CSV_TEXT);
 		ColumnOptionsComboBox.Active = 0;
