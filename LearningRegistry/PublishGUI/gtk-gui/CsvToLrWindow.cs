@@ -8,7 +8,7 @@ public partial class CsvToLrWindow
 	private global::Gtk.HBox DataContainer;
 	private global::Gtk.VBox MapRowsContainer;
 	private global::Gtk.VBox PublishInfoContainer;
-	private global::NodeInfoWidget nodeinfowidget2;
+	private global::NodeInfoWidget ServerInfoWidget;
 	private global::Gtk.Button CsvPublishButton;
 	
 	protected virtual void Build ()
@@ -54,11 +54,11 @@ public partial class CsvToLrWindow
 		this.PublishInfoContainer.Name = "PublishInfoContainer";
 		this.PublishInfoContainer.Spacing = 6;
 		// Container child PublishInfoContainer.Gtk.Box+BoxChild
-		this.nodeinfowidget2 = new global::NodeInfoWidget ();
-		this.nodeinfowidget2.Events = ((global::Gdk.EventMask)(256));
-		this.nodeinfowidget2.Name = "nodeinfowidget2";
-		this.PublishInfoContainer.Add (this.nodeinfowidget2);
-		global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.PublishInfoContainer [this.nodeinfowidget2]));
+        this.ServerInfoWidget = new global::NodeInfoWidget();
+        this.ServerInfoWidget.Events = ((global::Gdk.EventMask)(256));
+        this.ServerInfoWidget.Name = "ServerInfoWidget";
+		this.PublishInfoContainer.Add (this.ServerInfoWidget);
+		global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.PublishInfoContainer [this.ServerInfoWidget]));
 		w3.Position = 0;
 		w3.Expand = false;
 		w3.Fill = false;

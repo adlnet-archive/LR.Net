@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
 using Gtk;
+using LearningRegistry;
 using LearningRegistry.RDDD;
 using System.Text;
 
@@ -65,20 +66,30 @@ public partial class CsvToLrWindow : Gtk.Window
 	
 	protected void PublishDocuments(object sender, EventArgs e)
 	{
+        lr_Envelope envelope = buildEnvelopeFromMapping();
 
+        LRClient client = new LRClient(this.ServerInfoWidget.NodeUrl);
+        if (!String.IsNullOrEmpty(this.ServerInfoWidget.HttpUsername))
+        {
+            client.Username = ServerInfoWidget.HttpUsername;
+            client.Password = ServerInfoWidget.HttpPassword;
+        }
+        PublishResponse res = client.Publish(envelope);
+        
+		
+		Console.WriteLine("Done!");
+	}
 
-		//Input: rows
-		//Need to read each row in and store the value in a mapped list
-		//Output: map of column name to row value
-		//Create a dictionary map the columns
-		Dictionary<string, string> map = new Dictionary<string, string>();
+    private lr_Envelope buildEnvelopeFromMapping()
+    {
+        Dictionary<string, string> map = new Dictionary<string, string>();
         FieldInfo[] infos = typeof(lr_document).GetFields();
         int j = 0;
-		for(int i = 0; i < MapRowsContainer.Children.Length; i++)
+        for (int i = 0; i < MapRowsContainer.Children.Length; i++)
         {
             var info = infos[j];
             var mapRow = (CsvToLrMapRow)MapRowsContainer.Children[i];
-            if(nestedTypes.Contains(info.FieldType))
+            if (nestedTypes.Contains(info.FieldType))
             {
                 foreach (var subInfo in info.FieldType.GetFields())
                 {
@@ -87,21 +98,20 @@ public partial class CsvToLrWindow : Gtk.Window
                     map[key] = mapRow.DropDownValue;
                 }
                 j++;
-            } else
+            }
+            else
                 map[infos[j++].Name] = mapRow.DropDownValue;
         }
 
-		//Create the docs from the map and the dataDict
-		lr_Envelope envelope = new lr_Envelope();
-		for(int i = 0; i < _rawRowDataList.Count; i++)
-		{
-			lr_document doc = new lr_document();
+        //Create the docs from the map and the dataDict
+        lr_Envelope envelope = new lr_Envelope();
+        for (int i = 0; i < _rawRowDataList.Count; i++)
+        {
+            lr_document doc = new lr_document();
             int rowIndex = 0;
-			foreach(var info in infos)
-			{
+            foreach (var info in infos)
+            {
                 CsvToLrMapRow currentRow = (CsvToLrMapRow)MapRowsContainer.Children[rowIndex++];
-                if (currentRow.DropDownValue == null)
-                    continue; //Nothing to map to or assign if they did not choose a value from the dropdown
 
                 if (!nestedTypes.Contains(info.FieldType))
                 {
@@ -110,6 +120,8 @@ public partial class CsvToLrWindow : Gtk.Window
                         val = currentRow.ConstantValue;
                     else if (currentRow.IsSerializeToRow)
                         val = _rawRowDataList[i];
+                    else if (currentRow.DropDownValue == null)
+                        continue; //Nothing to map to or assign if they did not choose a value from the dropdown
                     else
                         val = _rowData[map[info.Name]][i];
 
@@ -123,45 +135,48 @@ public partial class CsvToLrWindow : Gtk.Window
                 }
                 else //This is a nested object property
                 {
-                    var subFields = info.GetType().GetFields();
+                    var subFields = info.FieldType.GetFields();
                     object currentObj = info.GetValue(doc);
-                    if(currentObj == null)
+                    if (currentObj == null)
                         currentObj = new object();
+
+                    rowIndex--;
                     foreach (var subField in subFields)
                     {
-                        var rowToAdd = ((CsvToLrMapRow[])MapRowsContainer.Children)
-                                            .Where( x => 
+                        var rowToAdd = MapRowsContainer.Children.Cast<CsvToLrMapRow>()
+                                            .Where(x =>
                                                         x.Key.Split('.')[0] == info.Name &&
                                                         x.Key.Split('.')[1] == subField.Name)
                                             .ToList()[0];
-                        string val = getNewDocValue(rowToAdd, _rawRowDataList[i], _rowData[map[rowToAdd.Key]][i]);
-                        if(subField.FieldType == typeof(List<string>))
+
+                        rowIndex++; //Used another row from subInfo, need to update the index
+
+
+                        string val;
+                        if (rowToAdd.IsConstant)
+                            val = rowToAdd.ConstantValue;
+                        else if (rowToAdd.IsSerializeToRow)
+                            val = _rawRowDataList[i];
+                        else if (rowToAdd.DropDownValue == null)
+                            continue;
+                        else
+                            val = _rowData[map[String.Join(".", info.Name, subField.Name)]][i];
+
+                        if (subField.FieldType == typeof(List<string>))
                         {
                             List<string> vals = val.Split(',').ToList<string>();
                             subField.SetValue(currentObj, vals);
-                        } 
+                        }
                         else
                             subField.SetValue(currentObj, val);
+
+
                     }
                 }
-			}
-			envelope.documents.Add(doc);
-		}
-		
-		
-		Console.WriteLine("Done!");
-	}
-
-    private string getNewDocValue(CsvToLrMapRow currentRow, string rawRowData, string mappedData)
-    {
-        string val;
-        if (currentRow.IsConstant)
-            val = currentRow.ConstantValue;
-        else if (currentRow.IsSerializeToRow)
-            val = rawRowData;
-        else
-            val = mappedData;
-        return val;
+            }
+            envelope.documents.Add(doc);
+        }
+        return envelope;
     }
 
     private void loadFromCsv(string path)
