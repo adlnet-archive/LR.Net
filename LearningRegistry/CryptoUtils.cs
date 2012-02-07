@@ -1,7 +1,11 @@
 using System;
+using System.Linq;
+using System.IO;
+using System.Collections.Generic;
+
 using LearningRegistry;
 using LearningRegistry.RDDD;
-using System.IO;
+
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Utilities;
 using Org.BouncyCastle.Bcpg;
@@ -15,28 +19,52 @@ namespace LearningRegistry
 		private const string pgpRegex = ".*-----BEGIN PGP PRIVATE KEY BLOCK-----.*-----END PGP PRIVATE KEY BLOCK-----.*";
 		private const string signingMethod = "LR-PGP.1.0";
 		
-		private string _publicKeyLocation;
+		private List<string> _publicKeyLocation;
 		private string _privateKey;
 		private string _passPhrase;
 		
-		public PgpSigner (string publicKeyLocation, string privateKey, string passPhrase)
+		public PgpSigner (IEnumerable<string> publicKeyLocation, string privateKey, string passPhrase)
 		{
-			_publicKeyLocation = publicKeyLocation;
+			_publicKeyLocation = publicKeyLocation.ToList();
 			_privateKey = privateKey;
 			_passPhrase = passPhrase;
 		}
 		
-		public lr_Envelope Sign(lr_Envelope envelope)
+		public lr_document Sign(lr_document document)
 		{
-			string bencodedMsg = envelope.Bencode();
-			string clearSignedMessage = signEnvelopData(bencodedMsg);
-			//TODO: Finish the signing stuff
-			return envelope;
+			//Nullify any previous signature info or fields populated by the server
+			document.digital_signature = null;
+			
+			//Bencode the document data
+			string bencodedMsg = document.Bencode();
+			
+			//Clear sign the bencoded document
+			string clearSignedMessage = signEnvelopeData(getHash(bencodedMsg));
+			
+			//Create a signature based on the clearSignedMessage
+			lr_digital_signature signature = new lr_digital_signature();
+			signature.signing_method = signingMethod;
+			Console.WriteLine("message: " + clearSignedMessage);
+			signature.signature = clearSignedMessage;
+			signature.key_location = _publicKeyLocation;
+			
+			//Add the signature to the original document
+			document.digital_signature = signature;
+			
+			return document;
 		}
 		
-		private string signEnvelopData(string msg)
+		private string getHash(string s)
 		{
-			Stream privateKeyStream = getPrivateKeyStream(msg);
+			var csp = new System.Security.Cryptography.SHA256Managed();
+			var utf8Encoding = new System.Text.UTF8Encoding();
+			byte[] result = csp.ComputeHash(utf8Encoding.GetBytes(s));
+			return Convert.ToBase64String(result)+"\n";
+		}
+		
+		private string signEnvelopeData(string msg)
+		{
+			Stream privateKeyStream = getPrivateKeyStream(_privateKey);
 			
 			MemoryStream result = new MemoryStream();
 			ArmoredOutputStream aOut = new ArmoredOutputStream(result);
@@ -59,18 +87,20 @@ namespace LearningRegistry
 				
 				aOut.BeginClearText(HashAlgorithmTag.Sha256);
 				sigGen.InitSign(PgpSignature.CanonicalTextDocument, pk);
-				byte[] msgBytes = utf8Encoding.GetBytes(msg.ToCharArray());
+				byte[] msgBytes = utf8Encoding.GetBytes(msg);
 				sigGen.Update(msgBytes, 0, msgBytes.Length);
 				aOut.Write(msgBytes, 0, msgBytes.Length);
 				bOut = new BcpgOutputStream(aOut);
 				aOut.EndClearText();
 				sigGen.Generate().Encode(bOut);
 				using (BinaryReader br = new BinaryReader(result))
+				{
+					br.BaseStream.Position = 0;
 					return utf8Encoding.GetString(br.ReadBytes((int)result.Length));
-				
+				}
 			}
 			catch (Exception e)
-			{	
+			{	Console.WriteLine("This happened: " + e.Message);
 				throw new Exception("Signing Failed: " + e.Message);
 			}
 			finally
@@ -79,9 +109,9 @@ namespace LearningRegistry
 				{
 					if (privateKeyStream != null)
 						privateKeyStream.Close();
-					if(bOut != null)
-						bOut.Close();
-					aOut.Close();
+					//if(bOut != null)
+						//bOut.Close();
+					//aOut.Close();
 					result.Close();
 				} catch (IOException) {}
 			}
@@ -114,9 +144,9 @@ namespace LearningRegistry
 			{
 				pgpSec = new PgpSecretKeyRingBundle(PgpUtilities.GetDecoderStream(privateKeyStream));
 			}
-			catch (Exception)
+			catch (Exception e)
 			{
-				throw new Exception("Invalid private key stream");
+				throw new Exception("Invalid private key stream, reason: " + e.Message);
 			}
 			
 			var keyRings = pgpSec.GetKeyRings();

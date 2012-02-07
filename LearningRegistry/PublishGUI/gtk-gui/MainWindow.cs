@@ -13,7 +13,7 @@ public partial class MainWindow
 	private global::Gtk.Action NewAction;
 	private global::Gtk.Action PublishFromCSVAction;
 	private global::Gtk.VBox MainVerticalPane;
-	private global::Gtk.MenuBar menubar1;
+	private global::Gtk.MenuBar MainMenu;
 	private global::Gtk.Notebook RootNotebook;
 	private global::Gtk.HBox ResourceDescriptionContainer;
 	private global::Gtk.VBox ResourceDescriptionColumn1;
@@ -66,9 +66,7 @@ public partial class MainWindow
 	private global::Gtk.ScrolledWindow GtkScrolledWindow;
 	private global::Gtk.TextView AttributionStatementTextView;
 	private global::Gtk.Label lbl_nb_TermsOfService;
-	private global::Gtk.VBox SignatureInformationContainer;
-	private global::Gtk.Label lbl_SignatureType;
-	private global::Gtk.ComboBox SignatureTypeComboBox;
+	private global::SignatureInformationWidget SignatureInformationWidget;
 	private global::Gtk.Label lbl_nb_SignatureInformation;
 	private global::Gtk.HBox NodeInformationContainer;
 	private global::NodeInfoWidget NodeInfo;
@@ -120,11 +118,11 @@ public partial class MainWindow
 		this.MainVerticalPane.Spacing = 6;
 		this.MainVerticalPane.BorderWidth = ((uint)(6));
 		// Container child MainVerticalPane.Gtk.Box+BoxChild
-		this.UIManager.AddUiFromString (@"<ui><menubar name='menubar1'><menu name='FileAction' action='FileAction'><menuitem name='NewAction' action='NewAction'/><menuitem name='OpenResourceDescriptionAction' action='OpenResourceDescriptionAction'/><menuitem name='SaveResourceDescriptionAction' action='SaveResourceDescriptionAction'/></menu><menu name='PublishAction' action='PublishAction'><menuitem name='PublishCurrentDocumentAction' action='PublishCurrentDocumentAction'/><menuitem name='PublishFromFolderAction' action='PublishFromFolderAction'/><menuitem name='PublishFromCSVAction' action='PublishFromCSVAction'/></menu></menubar></ui>");
-		this.menubar1 = ((global::Gtk.MenuBar)(this.UIManager.GetWidget ("/menubar1")));
-		this.menubar1.Name = "menubar1";
-		this.MainVerticalPane.Add (this.menubar1);
-		global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.MainVerticalPane [this.menubar1]));
+		this.UIManager.AddUiFromString (@"<ui><menubar name='MainMenu'><menu name='FileAction' action='FileAction'><menuitem name='NewAction' action='NewAction'/><menuitem name='OpenResourceDescriptionAction' action='OpenResourceDescriptionAction'/><menuitem name='SaveResourceDescriptionAction' action='SaveResourceDescriptionAction'/></menu><menu name='PublishAction' action='PublishAction'><menuitem name='PublishCurrentDocumentAction' action='PublishCurrentDocumentAction'/><menuitem name='PublishFromFolderAction' action='PublishFromFolderAction'/><menuitem name='PublishFromCSVAction' action='PublishFromCSVAction'/></menu></menubar></ui>");
+		this.MainMenu = ((global::Gtk.MenuBar)(this.UIManager.GetWidget ("/MainMenu")));
+		this.MainMenu.Name = "MainMenu";
+		this.MainVerticalPane.Add (this.MainMenu);
+		global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.MainVerticalPane [this.MainMenu]));
 		w2.Position = 0;
 		w2.Expand = false;
 		w2.Fill = false;
@@ -132,7 +130,7 @@ public partial class MainWindow
 		this.RootNotebook = new global::Gtk.Notebook ();
 		this.RootNotebook.CanFocus = true;
 		this.RootNotebook.Name = "RootNotebook";
-		this.RootNotebook.CurrentPage = 3;
+		this.RootNotebook.CurrentPage = 0;
 		// Container child RootNotebook.Gtk.Notebook+NotebookChild
 		this.ResourceDescriptionContainer = new global::Gtk.HBox ();
 		this.ResourceDescriptionContainer.Name = "ResourceDescriptionContainer";
@@ -632,40 +630,17 @@ public partial class MainWindow
 		this.RootNotebook.SetTabLabel (this.TermsOfServiceContainer, this.lbl_nb_TermsOfService);
 		this.lbl_nb_TermsOfService.ShowAll ();
 		// Container child RootNotebook.Gtk.Notebook+NotebookChild
-		this.SignatureInformationContainer = new global::Gtk.VBox ();
-		this.SignatureInformationContainer.Name = "SignatureInformationContainer";
-		this.SignatureInformationContainer.Spacing = 6;
-		this.SignatureInformationContainer.BorderWidth = ((uint)(9));
-		// Container child SignatureInformationContainer.Gtk.Box+BoxChild
-		this.lbl_SignatureType = new global::Gtk.Label ();
-		this.lbl_SignatureType.Name = "lbl_SignatureType";
-		this.lbl_SignatureType.Xalign = 0F;
-		this.lbl_SignatureType.LabelProp = global::Mono.Unix.Catalog.GetString ("*Signature Type:");
-		this.SignatureInformationContainer.Add (this.lbl_SignatureType);
-		global::Gtk.Box.BoxChild w52 = ((global::Gtk.Box.BoxChild)(this.SignatureInformationContainer [this.lbl_SignatureType]));
-		w52.Position = 0;
-		w52.Expand = false;
-		w52.Fill = false;
-		// Container child SignatureInformationContainer.Gtk.Box+BoxChild
-		this.SignatureTypeComboBox = global::Gtk.ComboBox.NewText ();
-		this.SignatureTypeComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("None"));
-		this.SignatureTypeComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("LR-PGP 1.0"));
-		this.SignatureTypeComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("Sign with CAC Card"));
-		this.SignatureTypeComboBox.Name = "SignatureTypeComboBox";
-		this.SignatureTypeComboBox.Active = 0;
-		this.SignatureInformationContainer.Add (this.SignatureTypeComboBox);
-		global::Gtk.Box.BoxChild w53 = ((global::Gtk.Box.BoxChild)(this.SignatureInformationContainer [this.SignatureTypeComboBox]));
-		w53.Position = 1;
-		w53.Expand = false;
-		w53.Fill = false;
-		this.RootNotebook.Add (this.SignatureInformationContainer);
-		global::Gtk.Notebook.NotebookChild w54 = ((global::Gtk.Notebook.NotebookChild)(this.RootNotebook [this.SignatureInformationContainer]));
-		w54.Position = 2;
+		this.SignatureInformationWidget = new global::SignatureInformationWidget ();
+		this.SignatureInformationWidget.Events = ((global::Gdk.EventMask)(256));
+		this.SignatureInformationWidget.Name = "SignatureInformationWidget";
+		this.RootNotebook.Add (this.SignatureInformationWidget);
+		global::Gtk.Notebook.NotebookChild w52 = ((global::Gtk.Notebook.NotebookChild)(this.RootNotebook [this.SignatureInformationWidget]));
+		w52.Position = 2;
 		// Notebook tab
 		this.lbl_nb_SignatureInformation = new global::Gtk.Label ();
 		this.lbl_nb_SignatureInformation.Name = "lbl_nb_SignatureInformation";
 		this.lbl_nb_SignatureInformation.LabelProp = global::Mono.Unix.Catalog.GetString ("Signature Information");
-		this.RootNotebook.SetTabLabel (this.SignatureInformationContainer, this.lbl_nb_SignatureInformation);
+		this.RootNotebook.SetTabLabel (this.SignatureInformationWidget, this.lbl_nb_SignatureInformation);
 		this.lbl_nb_SignatureInformation.ShowAll ();
 		// Container child RootNotebook.Gtk.Notebook+NotebookChild
 		this.NodeInformationContainer = new global::Gtk.HBox ();
@@ -677,13 +652,13 @@ public partial class MainWindow
 		this.NodeInfo.Events = ((global::Gdk.EventMask)(256));
 		this.NodeInfo.Name = "NodeInfo";
 		this.NodeInformationContainer.Add (this.NodeInfo);
-		global::Gtk.Box.BoxChild w55 = ((global::Gtk.Box.BoxChild)(this.NodeInformationContainer [this.NodeInfo]));
-		w55.Position = 0;
-		w55.Expand = false;
-		w55.Fill = false;
+		global::Gtk.Box.BoxChild w53 = ((global::Gtk.Box.BoxChild)(this.NodeInformationContainer [this.NodeInfo]));
+		w53.Position = 0;
+		w53.Expand = false;
+		w53.Fill = false;
 		this.RootNotebook.Add (this.NodeInformationContainer);
-		global::Gtk.Notebook.NotebookChild w56 = ((global::Gtk.Notebook.NotebookChild)(this.RootNotebook [this.NodeInformationContainer]));
-		w56.Position = 3;
+		global::Gtk.Notebook.NotebookChild w54 = ((global::Gtk.Notebook.NotebookChild)(this.RootNotebook [this.NodeInformationContainer]));
+		w54.Position = 3;
 		// Notebook tab
 		this.lbl_nb_NodeInformation = new global::Gtk.Label ();
 		this.lbl_nb_NodeInformation.Name = "lbl_nb_NodeInformation";
@@ -691,10 +666,10 @@ public partial class MainWindow
 		this.RootNotebook.SetTabLabel (this.NodeInformationContainer, this.lbl_nb_NodeInformation);
 		this.lbl_nb_NodeInformation.ShowAll ();
 		this.MainVerticalPane.Add (this.RootNotebook);
-		global::Gtk.Box.BoxChild w57 = ((global::Gtk.Box.BoxChild)(this.MainVerticalPane [this.RootNotebook]));
-		w57.Position = 1;
-		w57.Expand = false;
-		w57.Padding = ((uint)(10));
+		global::Gtk.Box.BoxChild w55 = ((global::Gtk.Box.BoxChild)(this.MainVerticalPane [this.RootNotebook]));
+		w55.Position = 1;
+		w55.Expand = false;
+		w55.Padding = ((uint)(10));
 		// Container child MainVerticalPane.Gtk.Box+BoxChild
 		this.RequiredFieldNotificationContainer = new global::Gtk.HBox ();
 		this.RequiredFieldNotificationContainer.Name = "RequiredFieldNotificationContainer";
@@ -706,14 +681,14 @@ public partial class MainWindow
 		this.lbl_requiredFieldsNotifier.LabelProp = global::Mono.Unix.Catalog.GetString ("Note: * indicates a required field");
 		this.lbl_requiredFieldsNotifier.Justify = ((global::Gtk.Justification)(1));
 		this.RequiredFieldNotificationContainer.Add (this.lbl_requiredFieldsNotifier);
-		global::Gtk.Box.BoxChild w58 = ((global::Gtk.Box.BoxChild)(this.RequiredFieldNotificationContainer [this.lbl_requiredFieldsNotifier]));
-		w58.Position = 2;
-		w58.Padding = ((uint)(5));
+		global::Gtk.Box.BoxChild w56 = ((global::Gtk.Box.BoxChild)(this.RequiredFieldNotificationContainer [this.lbl_requiredFieldsNotifier]));
+		w56.Position = 2;
+		w56.Padding = ((uint)(5));
 		this.MainVerticalPane.Add (this.RequiredFieldNotificationContainer);
-		global::Gtk.Box.BoxChild w59 = ((global::Gtk.Box.BoxChild)(this.MainVerticalPane [this.RequiredFieldNotificationContainer]));
-		w59.Position = 2;
-		w59.Expand = false;
-		w59.Fill = false;
+		global::Gtk.Box.BoxChild w57 = ((global::Gtk.Box.BoxChild)(this.MainVerticalPane [this.RequiredFieldNotificationContainer]));
+		w57.Position = 2;
+		w57.Expand = false;
+		w57.Fill = false;
 		// Container child MainVerticalPane.Gtk.Box+BoxChild
 		this.lbl_ConsoleOutput = new global::Gtk.Label ();
 		this.lbl_ConsoleOutput.Name = "lbl_ConsoleOutput";
@@ -721,10 +696,10 @@ public partial class MainWindow
 		this.lbl_ConsoleOutput.LabelProp = global::Mono.Unix.Catalog.GetString ("Console Output:");
 		this.lbl_ConsoleOutput.UseMarkup = true;
 		this.MainVerticalPane.Add (this.lbl_ConsoleOutput);
-		global::Gtk.Box.BoxChild w60 = ((global::Gtk.Box.BoxChild)(this.MainVerticalPane [this.lbl_ConsoleOutput]));
-		w60.Position = 3;
-		w60.Expand = false;
-		w60.Fill = false;
+		global::Gtk.Box.BoxChild w58 = ((global::Gtk.Box.BoxChild)(this.MainVerticalPane [this.lbl_ConsoleOutput]));
+		w58.Position = 3;
+		w58.Expand = false;
+		w58.Fill = false;
 		// Container child MainVerticalPane.Gtk.Box+BoxChild
 		this.ConsoleContainer = new global::Gtk.ScrolledWindow ();
 		this.ConsoleContainer.Name = "ConsoleContainer";
@@ -738,14 +713,14 @@ public partial class MainWindow
 		this.ConsoleWindow.WrapMode = ((global::Gtk.WrapMode)(1));
 		this.ConsoleContainer.Add (this.ConsoleWindow);
 		this.MainVerticalPane.Add (this.ConsoleContainer);
-		global::Gtk.Box.BoxChild w62 = ((global::Gtk.Box.BoxChild)(this.MainVerticalPane [this.ConsoleContainer]));
-		w62.Position = 4;
+		global::Gtk.Box.BoxChild w60 = ((global::Gtk.Box.BoxChild)(this.MainVerticalPane [this.ConsoleContainer]));
+		w60.Position = 4;
 		this.Add (this.MainVerticalPane);
 		if ((this.Child != null)) {
 			this.Child.ShowAll ();
 		}
 		this.DefaultWidth = 639;
-		this.DefaultHeight = 567;
+		this.DefaultHeight = 619;
 		this.PayloadLocatorContainer.Hide ();
 		this.PayloadEditorButtonBox.Hide ();
 		this.SubmitterNameContainer.Hide ();

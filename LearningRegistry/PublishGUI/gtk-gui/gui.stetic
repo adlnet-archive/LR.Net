@@ -8,7 +8,7 @@
     <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <widget-library name="../bin/Debug/PublishGUI.exe" internal="true" />
   </import>
-  <widget class="Gtk.Window" id="MainWindow" design-size="639 567">
+  <widget class="Gtk.Window" id="MainWindow" design-size="639 619">
     <action-group name="Default">
       <action id="FileAction">
         <property name="Type">Action</property>
@@ -66,9 +66,9 @@
         <property name="Spacing">6</property>
         <property name="BorderWidth">6</property>
         <child>
-          <widget class="Gtk.MenuBar" id="menubar1">
+          <widget class="Gtk.MenuBar" id="MainMenu">
             <property name="MemberName" />
-            <node name="menubar1" type="Menubar">
+            <node name="MainMenu" type="Menubar">
               <node type="Menu" action="FileAction">
                 <node type="Menuitem" action="NewAction" />
                 <node type="Menuitem" action="OpenResourceDescriptionAction" />
@@ -92,7 +92,7 @@
           <widget class="Gtk.Notebook" id="RootNotebook">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
-            <property name="CurrentPage">3</property>
+            <property name="CurrentPage">0</property>
             <child>
               <widget class="Gtk.HBox" id="ResourceDescriptionContainer">
                 <property name="MemberName" />
@@ -754,42 +754,9 @@ Agent</property>
               </packing>
             </child>
             <child>
-              <widget class="Gtk.VBox" id="SignatureInformationContainer">
+              <widget class="SignatureInformationWidget" id="SignatureInformationWidget">
                 <property name="MemberName" />
-                <property name="Spacing">6</property>
-                <property name="BorderWidth">9</property>
-                <child>
-                  <widget class="Gtk.Label" id="lbl_SignatureType">
-                    <property name="MemberName" />
-                    <property name="Xalign">0</property>
-                    <property name="LabelProp" translatable="yes">*Signature Type:</property>
-                  </widget>
-                  <packing>
-                    <property name="Position">0</property>
-                    <property name="AutoSize">True</property>
-                    <property name="Expand">False</property>
-                    <property name="Fill">False</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="Gtk.ComboBox" id="SignatureTypeComboBox">
-                    <property name="MemberName" />
-                    <property name="IsTextCombo">True</property>
-                    <property name="Items" translatable="yes">None
-LR-PGP 1.0
-Sign with CAC Card</property>
-                    <property name="Active">0</property>
-                  </widget>
-                  <packing>
-                    <property name="Position">1</property>
-                    <property name="AutoSize">True</property>
-                    <property name="Expand">False</property>
-                    <property name="Fill">False</property>
-                  </packing>
-                </child>
-                <child>
-                  <placeholder />
-                </child>
+                <property name="Events">ButtonPressMask</property>
               </widget>
               <packing>
                 <property name="Position">2</property>
@@ -982,7 +949,7 @@ Sign with CAC Card</property>
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Window" id="CsvToLrWindow" design-size="749 398">
+  <widget class="Gtk.Window" id="CsvToLrWindow" design-size="749 532">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Import From CSV</property>
     <property name="WindowPosition">CenterOnParent</property>
@@ -1036,12 +1003,24 @@ Sign with CAC Card</property>
                 <property name="MemberName" />
                 <property name="Spacing">6</property>
                 <child>
-                  <widget class="NodeInfoWidget" id="nodeinfowidget2">
+                  <widget class="NodeInfoWidget" id="ServerInfoWidget">
                     <property name="MemberName" />
                     <property name="Events">ButtonPressMask</property>
                   </widget>
                   <packing>
                     <property name="Position">0</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="SignatureInformationWidget" id="SignatureInformationWidget">
+                    <property name="MemberName" />
+                    <property name="Events">ButtonPressMask</property>
+                  </widget>
+                  <packing>
+                    <property name="Position">1</property>
                     <property name="AutoSize">True</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>
@@ -1058,7 +1037,7 @@ Sign with CAC Card</property>
                     <signal name="Clicked" handler="PublishDocuments" />
                   </widget>
                   <packing>
-                    <property name="Position">1</property>
+                    <property name="Position">2</property>
                     <property name="AutoSize">False</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>
@@ -1082,14 +1061,6 @@ Sign with CAC Card</property>
           </packing>
         </child>
       </widget>
-    </child>
-  </widget>
-  <widget class="Gtk.Window" id="PublishGUI.CsvToLrWindow" design-size="400 300">
-    <property name="MemberName" />
-    <property name="Title" translatable="yes">CsvToLrWindow</property>
-    <property name="WindowPosition">CenterOnParent</property>
-    <child>
-      <placeholder />
     </child>
   </widget>
   <widget class="Gtk.Bin" id="NodeInfoWidget" design-size="300 300">
@@ -1185,6 +1156,7 @@ Sign with CAC Card</property>
                 <property name="Items" translatable="yes">None
 HTTP Basic</property>
                 <property name="Active">0</property>
+                <signal name="Changed" handler="HandleAuthTypeChanged" />
               </widget>
               <packing>
                 <property name="Position">3</property>
@@ -1202,7 +1174,7 @@ HTTP Basic</property>
                   <widget class="Gtk.Label" id="lbl_AuthUsername">
                     <property name="MemberName" />
                     <property name="Xalign">0</property>
-                    <property name="LabelProp" translatable="yes">Username:</property>
+                    <property name="LabelProp" translatable="yes">*Username:</property>
                   </widget>
                   <packing>
                     <property name="Position">0</property>
@@ -1229,7 +1201,7 @@ HTTP Basic</property>
                   <widget class="Gtk.Label" id="lbl_AuthPassword">
                     <property name="MemberName" />
                     <property name="Xalign">0</property>
-                    <property name="LabelProp" translatable="yes">Password:</property>
+                    <property name="LabelProp" translatable="yes">*Password:</property>
                   </widget>
                   <packing>
                     <property name="Position">2</property>
@@ -1269,6 +1241,146 @@ HTTP Basic</property>
           </packing>
         </child>
       </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="SignatureInformationWidget" design-size="300 300">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Gtk.VBox" id="SignatureInformationContainer">
+        <property name="MemberName" />
+        <property name="Spacing">6</property>
+        <property name="BorderWidth">9</property>
+        <child>
+          <widget class="Gtk.Label" id="lbl_SignatureType">
+            <property name="MemberName" />
+            <property name="Xalign">0</property>
+            <property name="LabelProp" translatable="yes">*Signature Type:</property>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.ComboBox" id="SignatureTypeComboBox">
+            <property name="MemberName" />
+            <property name="IsTextCombo">True</property>
+            <property name="Items" translatable="yes">None
+LR-PGP 1.0
+Sign with CAC Card</property>
+            <property name="Active">0</property>
+            <signal name="Changed" handler="UpdateSubcontainerVisibility" after="yes" />
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.VBox" id="PgpInfoContainer">
+            <property name="MemberName" />
+            <property name="Visible">False</property>
+            <property name="Spacing">6</property>
+            <child>
+              <widget class="Gtk.Label" id="lbl_PgpSecretKeyRingLocation">
+                <property name="MemberName" />
+                <property name="Xalign">0</property>
+                <property name="LabelProp" translatable="yes">*Secret Keyring Location:</property>
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.FileChooserButton" id="PgpSecretKeyRingLocationFileChooser">
+                <property name="MemberName" />
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="lbl_PgpSecretKeyPassphrase">
+                <property name="MemberName" />
+                <property name="Xalign">0</property>
+                <property name="LabelProp" translatable="yes">*Secret Key Passphrase:</property>
+              </widget>
+              <packing>
+                <property name="Position">2</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Entry" id="PgpSecretKeyPassphraseTextBox">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="IsEditable">True</property>
+                <property name="InvisibleChar">●</property>
+              </widget>
+              <packing>
+                <property name="Position">3</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="lbl_PgpPublicKeyLocations">
+                <property name="MemberName" />
+                <property name="Xalign">0</property>
+                <property name="LabelProp" translatable="yes">*Public Key Location(s) (separated by commas):</property>
+              </widget>
+              <packing>
+                <property name="Position">4</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Entry" id="PgpPublicKeyLocationsTextBox">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="IsEditable">True</property>
+                <property name="InvisibleChar">●</property>
+              </widget>
+              <packing>
+                <property name="Position">5</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">2</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Window" id="HistoryWindow" design-size="400 300">
+    <property name="MemberName" />
+    <property name="Title" translatable="yes">HistoryWindow</property>
+    <property name="WindowPosition">CenterOnParent</property>
+    <child>
+      <placeholder />
     </child>
   </widget>
 </stetic-interface>

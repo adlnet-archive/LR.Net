@@ -47,6 +47,11 @@ namespace LearningRegistry
         {
             if (input == null)
                 return new Bencoding.BString("null");
+			if(input.GetType() == typeof(ArrayList))
+			{
+				Array value = ((ArrayList)input).ToArray();
+				return bencode(value);
+			}
             if(input.GetType() == typeof(Dictionary<string, object>))
             {
                 Dictionary<string, object> value = (Dictionary<string, object>)input;
@@ -124,10 +129,16 @@ namespace LearningRegistry
             {
                 bdic.Add(new Bencoding.BString(f.Name),bencode(f.GetValue(input)));
             }
+			
+			if(input.GetType() == typeof(ArrayList))
+			{
+				foreach(object o in (ArrayList)input)
+					Console.WriteLine(o.ToString());
+			}
             foreach (System.Reflection.PropertyInfo f in t.GetProperties())
             {
-                System.Reflection.MethodInfo mf = f.GetGetMethod();
-                object o = mf.Invoke(input, null);
+				Console.WriteLine("Input: " + input.ToString() + "; Property: " + f.Name);
+                object o = f.GetValue(input, null);
                 bdic.Add(new Bencoding.BString(f.Name), bencode(o));
             }
             return  bdic;
@@ -525,15 +536,7 @@ namespace LearningRegistry
             public string submitter;
             public string signer;
 			[RequiredField]
-            public string submitter_type;
-            public lr_identity()
-            {
-                curator = "";
-                owner = "";
-                submitter = "";
-                signer = "";
-                submitter_type = "agent";
-            }
+            public string submitter_type = "agent";
         }
         /*public class lr_keys : List<string>
         {
@@ -586,38 +589,40 @@ namespace LearningRegistry
 			
           //  [DataMember]
           //  public lr_TOS TOS;
-			[RequiredField]
+			
+			[RequiredField(true)]
             [DataMember]
-            public Boolean active;
+            public Boolean active = true;
+			
+			[RequiredField(true)]
+            [DataMember]
+            public String doc_type = "resource_data";
+			
+			[RequiredField(true)]
+            [DataMember]
+            public String doc_version = "0.23.0";
 			
 			[RequiredField]
             [DataMember]
-            public String doc_type;
-			
-			[RequiredField]
-            [DataMember]
-            public String doc_version;
-			
-			[RequiredField]
-            [DataMember]
-            public List<string> payload_schema;
+            public List<string> payload_schema = new List<string>();
 			
 			[RequiredField]
 			[DataMember]
-            public String resource_data_type;
+            public String resource_data_type = Taxonomies.ResourceDataType.Metadata;
 			
 			[RequiredField]
 			[DataMember]
             public String resource_locator;
 			
             [DataMember]
-            public lr_identity identity;
+            public lr_identity identity = new lr_identity();
 			
             [DataMember]
-            public List<string> keys;		
+            public List<string> keys = new List<string>();		
 			
+			[RequiredField]
 			[DataMember]
-            public String payload_placement;
+            public String payload_placement = Taxonomies.PayloadPlacement.Inline;
 			
             [DataMember]
             public Object resource_data;
@@ -631,42 +636,24 @@ namespace LearningRegistry
             [DataMember]
             public String payload_locator;
 			
+			[RequiredField(true)]
 			[DataMember]
 			public String doc_ID;
 			
 			[DataMember]
-			public lr_TOS TOS;
+			public lr_TOS TOS = new lr_TOS();
 			
             [DataMember]
-            public int weight;
-
+            public int weight = 0;
+			
             [DataMember]
             public lr_digital_signature digital_signature;
 
             [DataMember]
-            public int resource_TTL;
-            public lr_document()
-            {
-                active = true;
-                doc_type = "resource_data";
-                doc_version = "0.23.0";
-                identity = new lr_identity();
-                keys = new List<string>();
-                payload_placement = "inline";
-                payload_schema = new List<string>();
-                resource_data = "";
-                resource_data_type = "metadata";
-                resource_locator = "";
-                payload_schema_locator = "";
-                payload_schema_format = "";
-               
-                payload_locator = "";
-                weight = 100;
-                resource_TTL = 0;
-                digital_signature = null;
-				
-				TOS = new lr_TOS();
-            }
+            public int resource_TTL = 0;
+			
+            public lr_document(){}
+			
             public void Sign(string passphrase, string keyID, string keyloc)
             {
  

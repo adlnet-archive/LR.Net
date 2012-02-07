@@ -108,7 +108,7 @@ public partial class NodeInfoWidget
 		this.lbl_AuthUsername = new global::Gtk.Label ();
 		this.lbl_AuthUsername.Name = "lbl_AuthUsername";
 		this.lbl_AuthUsername.Xalign = 0F;
-		this.lbl_AuthUsername.LabelProp = global::Mono.Unix.Catalog.GetString ("Username:");
+		this.lbl_AuthUsername.LabelProp = global::Mono.Unix.Catalog.GetString ("*Username:");
 		this.AuthCredentialsContainer.Add (this.lbl_AuthUsername);
 		global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.AuthCredentialsContainer [this.lbl_AuthUsername]));
 		w8.Position = 0;
@@ -129,7 +129,7 @@ public partial class NodeInfoWidget
 		this.lbl_AuthPassword = new global::Gtk.Label ();
 		this.lbl_AuthPassword.Name = "lbl_AuthPassword";
 		this.lbl_AuthPassword.Xalign = 0F;
-		this.lbl_AuthPassword.LabelProp = global::Mono.Unix.Catalog.GetString ("Password:");
+		this.lbl_AuthPassword.LabelProp = global::Mono.Unix.Catalog.GetString ("*Password:");
 		this.AuthCredentialsContainer.Add (this.lbl_AuthPassword);
 		global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.AuthCredentialsContainer [this.lbl_AuthPassword]));
 		w10.Position = 2;
@@ -162,5 +162,6 @@ public partial class NodeInfoWidget
 		}
 		this.AuthCredentialsContainer.Hide ();
 		this.Hide ();
+		this.AuthTypeComboBox.Changed += new global::System.EventHandler (this.HandleAuthTypeChanged);
 	}
 }

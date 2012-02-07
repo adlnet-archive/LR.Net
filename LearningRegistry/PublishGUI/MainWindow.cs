@@ -9,11 +9,14 @@ using PublishGUI;
 
 public partial class MainWindow: Gtk.Window
 {	
-	
-
+	private List<Gtk.Label> _missingFields;
 	
 	protected string _resourceDataRaw { get; set; }
-	
+
+	protected void OnSignatureTypeComboBoxChanged (object sender, System.EventArgs e)
+	{
+		throw new System.NotImplementedException ();
+	}	
 	public MainWindow (): base (Gtk.WindowType.Toplevel)
 	{
 		Build ();
@@ -48,6 +51,18 @@ public partial class MainWindow: Gtk.Window
 		{
 			WriteLineToConsole("\n========BEGIN PUBLISH ATTEMPT========");
 			lr_document doc = buildDoc();
+			
+			//Examine signature information and sign if necessary
+			SignatureInformationWidget sigInfo = this.SignatureInformationWidget;
+			if(sigInfo.SignatureType == SignatureType.LR_PGP)
+			{
+				PgpSigner signer = new PgpSigner(sigInfo.PgpPublicKeyLocations,
+				                                 sigInfo.PgpKeyringLocation,
+				                                 sigInfo.PgpSecretKeyPassphrase);
+				
+				doc = signer.Sign(doc);
+			}
+			
 			lr_Envelope envelope = buildEnvelope(new List<lr_document>(){doc});
 			
 			var client = new LRClient(this.NodeInfo.NodeUrl);
@@ -62,29 +77,79 @@ public partial class MainWindow: Gtk.Window
 			{
 				PublishResponse pubResponse = client.Publish(envelope);
 				WriteToConsole("Done\n");
+				
+				//Make sure the response was ok
+				if(!pubResponse.OK)
+					throw new Exception(pubResponse.error);
+				else if(!pubResponse.document_results[0].OK)
+					throw new Exception(pubResponse.document_results[0].error);
+				
 				WriteLineToConsole("Document(s) were sucessfully published! "+
 				                   "Here are the results:");
 				WriteLineToConsole(pubResponse.Serialize());
-				SavePublishHistory(pubResponse);
+				PublishGUI.Helper.SavePublishHistory(this.NodeInfo.NodeUrl, pubResponse);
 			}
 			catch (Exception exception)
 			{
 				WriteLineToConsole("Publish failed! Reason:\n"+exception.Message);
 				WriteToConsole("Stack Trace:\n" + exception.StackTrace);
 			}
-		} else
-			ShowMissingFields();	
+		} 
+		else
+			ShowMissingFields();
+		
 	}
 	
 	protected void ShowMissingFields()
 	{
-		//TODO: Display the fields that weren't caught on validation
+		Gdk.Color col = new Gdk.Color();
+		Gdk.Color.Parse("red", ref col);
+		
+		foreach(var lbl in _missingFields)
+			lbl.ModifyFg(StateType.Normal, col);
+		
+		Helper.CreateNotficationWindow(Helper.MSG_MISSING_FIELDS);
 	}
 	
 	private bool ValidateRequiredFields()
 	{
-		//TODO: Validate the fields for data type and completeness
-		return true;
+		List<Gtk.Label> missingFields = new List<Gtk.Label>();
+		
+		if(String.IsNullOrEmpty(this.ResourceLocatorTextBox.Text))
+			missingFields.Add(lbl_ResourceLocator);
+		
+		if(PayloadPlacementComboBox.Active == (int)PayloadPlacement.inline
+		   && String.IsNullOrEmpty(PayloadFileChooser.Filename))
+			missingFields.Add(this.lbl_PayloadFile);
+		else if(String.IsNullOrEmpty(this.PayloadLocatorTextBox.Text))
+			missingFields.Add(this.lbl_PayloadLocator);
+		
+		if(String.IsNullOrEmpty(this.PayloadSchemaTextBox.Text))
+			missingFields.Add(this.lbl_PayloadSchema);
+		
+		if(this.SubmitterTypeComboBox.Active > (int)SubmitterType.anonymous
+		   && String.IsNullOrEmpty(SubmitterNameTextBox.Text))
+			missingFields.Add(this.lbl_SubmitterName);
+		
+		missingFields.AddRange(this.SignatureInformationWidget.GetMissingFields());
+		missingFields.AddRange(this.NodeInfo.GetMissingFields());
+		
+		Gdk.Color col = new Gdk.Color();
+		Gdk.Color.Parse("black", ref col);
+		
+		//Check the old ones to see if they have been fixed
+		if(_missingFields != null)
+		{
+			foreach(var lbl in _missingFields)
+			{
+				if(missingFields.Where( x => x.LabelProp == lbl.LabelProp ).Count() == 0)
+					lbl.ModifyFg(StateType.Normal, col);
+			}
+		}
+		
+		_missingFields = missingFields;
+		
+		return _missingFields.Count == 0;
 	}
 	
 	private lr_document buildDoc()
@@ -142,8 +207,6 @@ public partial class MainWindow: Gtk.Window
 			ident.signer = SignerTextBox.Text;
 		doc.identity = ident;
 		
-		//TODO: Signature
-		
 		WriteToConsole("Done\n");
 		return doc;
 	}
@@ -152,10 +215,7 @@ public partial class MainWindow: Gtk.Window
 	{
 		WriteToConsole("Stuffing the envelope...");
 		lr_Envelope envelope = new lr_Envelope();
-		if(this.SignatureTypeComboBox.Active > (int)SignatureType.None)
-		{
-				//TODO: Sign the envelope
-		}
+		
 		envelope.documents.AddRange(docs);
 		WriteToConsole("Done\n");
 		return envelope;
@@ -319,6 +379,7 @@ public partial class MainWindow: Gtk.Window
 
 	protected void ResetFields (object sender, System.EventArgs e)
 	{
+		//Reset all of this container's fields
 		this.ResourceDataTypeComboBox.Active = (int)ResourceDataType.metadata;
 		this.ResourceLocatorTextBox.Text = "";
 		this.PayloadPlacementComboBox.Active = (int)PayloadPlacement.inline;
@@ -335,8 +396,10 @@ public partial class MainWindow: Gtk.Window
 		this.SignerTextBox.Text = "";
 		this.TermsOfServiceTextBox.Text = "";
 		this.AttributionStatementTextView.Buffer.Text = "";
-		this.SignatureTypeComboBox.Active = (int)SignatureType.None;
 		this.PayloadFileChooser.UnselectAll();
+		
+		//Reset the widgets' fields
+		this.SignatureInformationWidget.ResetFields();
 		this.NodeInfo.ResetFields();
 		
 		_resourceDataRaw = null;
@@ -367,17 +430,6 @@ public partial class MainWindow: Gtk.Window
 		using(StreamReader reader = new StreamReader(this.PayloadFileChooser.Filename))
 			_resourceDataRaw = reader.ReadToEnd();
 		this.PayloadEditorButtonBox.Visible = true;
-	}
-	
-	
-	protected void SavePublishHistory(PublishResponse response)
-	{
-		string timestamp = DateTime.Now.ToString("yyyy-MM-ddThh:mm:ssZ");
-		using(FileStream fs = new FileStream(".history", FileMode.Append))
-			using(StreamWriter writer = new StreamWriter(fs))
-				foreach(DocPublishResult result in response.document_results)
-						writer.WriteLine(String.Format("{0} {1}", result.doc_ID, timestamp));
-					                               
 	}
 	
 	protected static void PopulateComboBox<TEnumType> (string docVal, ref ComboBox combo, TEnumType defaultVal)
@@ -427,6 +479,4 @@ public partial class MainWindow: Gtk.Window
         else
             dialog.Destroy();
 	}
-	
-	
 }

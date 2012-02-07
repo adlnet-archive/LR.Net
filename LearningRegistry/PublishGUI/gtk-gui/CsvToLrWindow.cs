@@ -9,6 +9,7 @@ public partial class CsvToLrWindow
 	private global::Gtk.VBox MapRowsContainer;
 	private global::Gtk.VBox PublishInfoContainer;
 	private global::NodeInfoWidget ServerInfoWidget;
+	private global::SignatureInformationWidget SignatureInformationWidget;
 	private global::Gtk.Button CsvPublishButton;
 	
 	protected virtual void Build ()
@@ -54,14 +55,23 @@ public partial class CsvToLrWindow
 		this.PublishInfoContainer.Name = "PublishInfoContainer";
 		this.PublishInfoContainer.Spacing = 6;
 		// Container child PublishInfoContainer.Gtk.Box+BoxChild
-        this.ServerInfoWidget = new global::NodeInfoWidget();
-        this.ServerInfoWidget.Events = ((global::Gdk.EventMask)(256));
-        this.ServerInfoWidget.Name = "ServerInfoWidget";
+		this.ServerInfoWidget = new global::NodeInfoWidget ();
+		this.ServerInfoWidget.Events = ((global::Gdk.EventMask)(256));
+		this.ServerInfoWidget.Name = "ServerInfoWidget";
 		this.PublishInfoContainer.Add (this.ServerInfoWidget);
 		global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.PublishInfoContainer [this.ServerInfoWidget]));
 		w3.Position = 0;
 		w3.Expand = false;
 		w3.Fill = false;
+		// Container child PublishInfoContainer.Gtk.Box+BoxChild
+		this.SignatureInformationWidget = new global::SignatureInformationWidget ();
+		this.SignatureInformationWidget.Events = ((global::Gdk.EventMask)(256));
+		this.SignatureInformationWidget.Name = "SignatureInformationWidget";
+		this.PublishInfoContainer.Add (this.SignatureInformationWidget);
+		global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.PublishInfoContainer [this.SignatureInformationWidget]));
+		w4.Position = 1;
+		w4.Expand = false;
+		w4.Fill = false;
 		// Container child PublishInfoContainer.Gtk.Box+BoxChild
 		this.CsvPublishButton = new global::Gtk.Button ();
 		this.CsvPublishButton.WidthRequest = 100;
@@ -70,27 +80,27 @@ public partial class CsvToLrWindow
 		this.CsvPublishButton.UseUnderline = true;
 		this.CsvPublishButton.Label = global::Mono.Unix.Catalog.GetString ("Publish Documents");
 		this.PublishInfoContainer.Add (this.CsvPublishButton);
-		global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.PublishInfoContainer [this.CsvPublishButton]));
-		w4.Position = 1;
-		w4.Expand = false;
-		w4.Fill = false;
-		this.DataContainer.Add (this.PublishInfoContainer);
-		global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.DataContainer [this.PublishInfoContainer]));
-		w5.Position = 1;
+		global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.PublishInfoContainer [this.CsvPublishButton]));
+		w5.Position = 2;
 		w5.Expand = false;
 		w5.Fill = false;
-		w5.Padding = ((uint)(11));
-		this.RootContainer.Add (this.DataContainer);
-		global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.RootContainer [this.DataContainer]));
+		this.DataContainer.Add (this.PublishInfoContainer);
+		global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.DataContainer [this.PublishInfoContainer]));
 		w6.Position = 1;
 		w6.Expand = false;
 		w6.Fill = false;
+		w6.Padding = ((uint)(11));
+		this.RootContainer.Add (this.DataContainer);
+		global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.RootContainer [this.DataContainer]));
+		w7.Position = 1;
+		w7.Expand = false;
+		w7.Fill = false;
 		this.Add (this.RootContainer);
 		if ((this.Child != null)) {
 			this.Child.ShowAll ();
 		}
 		this.DefaultWidth = 749;
-		this.DefaultHeight = 398;
+		this.DefaultHeight = 532;
 		this.Show ();
 		this.CsvPublishButton.Clicked += new global::System.EventHandler (this.PublishDocuments);
 	}

@@ -4,8 +4,18 @@ namespace LearningRegistry
 {
 	public class RequiredField : Attribute
 	{
-		public RequiredField ()
+		private bool _immutable;
+		public bool Immutable { get { return _immutable; } }	
+		
+		
+		public RequiredField()
 		{
+			_immutable = false;
+		}
+		
+		public RequiredField (bool immutable)
+		{
+			_immutable = immutable;
 		}
 	}
 }

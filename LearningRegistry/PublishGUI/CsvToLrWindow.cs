@@ -13,6 +13,8 @@ using System.Text;
 
 public partial class CsvToLrWindow : Gtk.Window
 {
+	private List<Label> _missingFields;
+	
     private List<string> _rawRowDataList = new List<string>();
     private Dictionary<string, List<string>> _rowData;
 
@@ -30,7 +32,6 @@ public partial class CsvToLrWindow : Gtk.Window
 	public CsvToLrWindow () : 
 			base(Gtk.WindowType.Toplevel)
 	{
-		
 		this.Build ();
 	}
 	
@@ -41,10 +42,20 @@ public partial class CsvToLrWindow : Gtk.Window
 		FieldInfo[] infos = typeof(lr_document).GetFields();
 		foreach(var info in infos)
 		{
+			var attrs = info.GetCustomAttributes(typeof(RequiredField), false);
+			if(attrs.Length > 0)
+			{
+				if(((RequiredField)attrs[0]).Immutable)
+					continue;
+			}
+				
 			if(nestedTypes.Contains(info.FieldType))
 			{
+				//this is done internally
+				if(info.FieldType.Equals(typeof(lr_digital_signature)))
+					continue;
+				
 				//Nesting only goes one level, which makes this work
-				//TODO: use flags to find non-primitives, then recursively descend into them.
 				foreach(var subInfo in info.FieldType.GetFields())
 				{
 					string name = String.Join(".", info.Name, subInfo.Name);
@@ -64,24 +75,117 @@ public partial class CsvToLrWindow : Gtk.Window
 		}
 	}
 	
+	private bool ValidateRequiredFields()
+	{
+		bool valid = true;
+		
+		
+		Gdk.Color black = new Gdk.Color();
+		Gdk.Color.Parse("black", ref black);
+		
+		List<Label> missingFields = new List<Label>();
+		
+		//Validate the rows
+		foreach(CsvToLrMapRow row in MapRowsContainer)
+		{
+			if(row.Key.Contains("*") && 
+			   	(row.DropDownValue == null || 
+			 	(row.IsConstant && String.IsNullOrEmpty(row.ConstantValue))))
+			{
+				HBox container = (HBox)row.Children[0];
+				missingFields.Add((Label)container.Children[0]);
+				valid = false;
+			}	
+		}
+		
+		missingFields.AddRange(this.SignatureInformationWidget.GetMissingFields());
+		missingFields.AddRange(this.ServerInfoWidget.GetMissingFields());
+		
+		if(this._missingFields != null)
+		{
+			foreach(var lbl in _missingFields)
+			{
+				if(missingFields.Where( x => x.LabelProp == lbl.LabelProp ).Count() == 0)
+					lbl.ModifyFg(StateType.Normal, black);
+			}
+		}
+		
+		_missingFields = missingFields;
+		
+		return valid;
+	}
+	
+	protected void ShowMissingFields()
+	{
+		Gdk.Color red = new Gdk.Color();
+		Gdk.Color.Parse("red", ref red);
+		
+		foreach(var field in _missingFields)
+			field.ModifyFg(StateType.Normal, red);
+		
+		PublishGUI.Helper.CreateNotficationWindow(PublishGUI.Helper.MSG_MISSING_FIELDS);
+	}
+	
 	protected void PublishDocuments(object sender, EventArgs e)
 	{
-        lr_Envelope envelope = buildEnvelopeFromMapping();
-
-        LRClient client = new LRClient(this.ServerInfoWidget.NodeUrl);
-        if (!String.IsNullOrEmpty(this.ServerInfoWidget.HttpUsername))
-        {
-            client.Username = ServerInfoWidget.HttpUsername;
-            client.Password = ServerInfoWidget.HttpPassword;
-        }
-        PublishResponse res = client.Publish(envelope);
-        
-		
-		Console.WriteLine("Done!");
+		bool validated = ValidateRequiredFields();
+		if(validated)
+		{
+	        lr_Envelope envelope = buildEnvelopeFromMapping();
+	
+	        LRClient client = new LRClient(this.ServerInfoWidget.NodeUrl);
+	        if (!String.IsNullOrEmpty(this.ServerInfoWidget.HttpUsername))
+	        {
+	            client.Username = ServerInfoWidget.HttpUsername;
+	            client.Password = ServerInfoWidget.HttpPassword;
+	        }
+	        PublishResponse res = client.Publish(envelope);
+			buildAndShowNotification(res);
+		}
+		else
+			ShowMissingFields();
 	}
-
+	
+	private void buildAndShowNotification(PublishResponse response)
+	{
+		StringBuilder sb = new StringBuilder();
+		bool success =  response.OK;
+		if(!response.OK)
+				sb.AppendLine("General response error: " + response.error);
+		foreach(DocPublishResult docResult in response.document_results)
+		{
+			if(!docResult.OK)
+			{
+				success = false;
+				sb.AppendLine("Doc error: " + docResult.error);
+			}
+		}
+        if(success)
+		{
+			PublishGUI.Helper.SavePublishHistory(this.ServerInfoWidget.NodeUrl, response);
+			sb.AppendLine("Documents were successfully published!");
+			sb.AppendLine("To view the docs online, or for further information from the responses,"
+                         +"you may go to History -> Show All in the main menu.");
+		}
+		else
+			sb.AppendLine("One or more errors occurred while publishing your documents. See above for detailed error report.");	
+		
+		PublishGUI.Helper.CreateNotficationWindow(sb.ToString());
+	}
+	
     private lr_Envelope buildEnvelopeFromMapping()
     {
+		
+		var sigInfo = this.SignatureInformationWidget;
+		PgpSigner signer = null;
+		bool needToSign = false;
+		if(sigInfo.SignatureType == PublishGUI.SignatureType.LR_PGP)
+		{
+			signer = new PgpSigner(sigInfo.PgpPublicKeyLocations,
+			                       sigInfo.PgpKeyringLocation,
+			                       sigInfo.PgpSecretKeyPassphrase);
+			needToSign = true;
+		}
         Dictionary<string, string> map = new Dictionary<string, string>();
         FieldInfo[] infos = typeof(lr_document).GetFields();
         int j = 0;
@@ -89,14 +193,37 @@ public partial class CsvToLrWindow : Gtk.Window
         {
             var info = infos[j];
             var mapRow = (CsvToLrMapRow)MapRowsContainer.Children[i];
+
+            var customAttributes = info.GetCustomAttributes(typeof(RequiredField), false);
+            if (customAttributes.Length > 0)
+            {
+                RequiredField attr = (RequiredField)customAttributes[0];
+                if (attr.Immutable)
+                {
+                    i--; //It was never added to the RowContainer, so we need to examine mapRow again with the next property
+                    j++;  //We examined the property, increment this index
+                    continue;
+                }
+            }
+
             if (nestedTypes.Contains(info.FieldType))
             {
-                foreach (var subInfo in info.FieldType.GetFields())
+                //Never added to RowContainer, decrement i and increment j
+                if (info.FieldType == typeof(lr_digital_signature))
                 {
+                    i--;
+                    j++;
+                    continue;
+                }
+
+                foreach (var subInfo in info.FieldType.GetFields())
+                {                  
                     mapRow = (CsvToLrMapRow)MapRowsContainer.Children[i++];
                     string key = String.Join(".", info.Name, subInfo.Name);
                     map[key] = mapRow.DropDownValue;
                 }
+                if(info.FieldType.GetFields().Length > 0)
+                    i--; //avoid double incrementing from loop iterator statment
                 j++;
             }
             else
@@ -112,7 +239,18 @@ public partial class CsvToLrWindow : Gtk.Window
             foreach (var info in infos)
             {
                 CsvToLrMapRow currentRow = (CsvToLrMapRow)MapRowsContainer.Children[rowIndex++];
-
+				
+				var customAttributes = info.GetCustomAttributes(typeof(RequiredField), false);
+				if(customAttributes.Length > 0 )
+				{
+					RequiredField attr = (RequiredField)customAttributes[0];
+                    if (attr.Immutable)
+                    {
+                        rowIndex--;
+                        continue;
+                    }
+				}
+                
                 if (!nestedTypes.Contains(info.FieldType))
                 {
                     string val;
@@ -141,6 +279,10 @@ public partial class CsvToLrWindow : Gtk.Window
                         currentObj = new object();
 
                     rowIndex--;
+
+                    if (typeof(lr_digital_signature).Equals(info.FieldType))
+                        continue;
+
                     foreach (var subField in subFields)
                     {
                         var rowToAdd = MapRowsContainer.Children.Cast<CsvToLrMapRow>()
@@ -150,7 +292,6 @@ public partial class CsvToLrWindow : Gtk.Window
                                             .ToList()[0];
 
                         rowIndex++; //Used another row from subInfo, need to update the index
-
 
                         string val;
                         if (rowToAdd.IsConstant)
@@ -174,6 +315,9 @@ public partial class CsvToLrWindow : Gtk.Window
                     }
                 }
             }
+			if(needToSign)
+				doc = signer.Sign(doc);
+			
             envelope.documents.Add(doc);
         }
         return envelope;

@@ -12,7 +12,7 @@ public partial class CsvToLrMapRow : Gtk.Bin
     public const string ROW_AS_CSV_TEXT = "<Entire Row (as JSON)>";
 	public string Key
 	{
-		get { return this.lbl_ResourceDataField.Text.Replace("*", ""); }
+		get { return this.lbl_ResourceDataField.Text; }
 	}
 	
 	private bool _isConstant;
