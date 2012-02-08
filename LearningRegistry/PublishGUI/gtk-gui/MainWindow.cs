@@ -12,6 +12,8 @@ public partial class MainWindow
 	private global::Gtk.Action PublishFromFolderAction;
 	private global::Gtk.Action NewAction;
 	private global::Gtk.Action PublishFromCSVAction;
+	private global::Gtk.Action HistoryAction;
+	private global::Gtk.Action ViewPublishHistoryAction;
 	private global::Gtk.VBox MainVerticalPane;
 	private global::Gtk.MenuBar MainMenu;
 	private global::Gtk.Notebook RootNotebook;
@@ -104,9 +106,15 @@ public partial class MainWindow
 		this.NewAction = new global::Gtk.Action ("NewAction", global::Mono.Unix.Catalog.GetString ("New"), null, null);
 		this.NewAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("New");
 		w1.Add (this.NewAction, null);
-		this.PublishFromCSVAction = new global::Gtk.Action ("PublishFromCSVAction", global::Mono.Unix.Catalog.GetString ("Publish From CSV"), null, null);
+		this.PublishFromCSVAction = new global::Gtk.Action ("PublishFromCSVAction", global::Mono.Unix.Catalog.GetString ("Publish From CSV..."), null, null);
 		this.PublishFromCSVAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Publish From CSV");
 		w1.Add (this.PublishFromCSVAction, null);
+		this.HistoryAction = new global::Gtk.Action ("HistoryAction", global::Mono.Unix.Catalog.GetString ("History"), null, null);
+		this.HistoryAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("History");
+		w1.Add (this.HistoryAction, null);
+		this.ViewPublishHistoryAction = new global::Gtk.Action ("ViewPublishHistoryAction", global::Mono.Unix.Catalog.GetString ("View Publish History"), null, null);
+		this.ViewPublishHistoryAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("View Publish History");
+		w1.Add (this.ViewPublishHistoryAction, null);
 		this.UIManager.InsertActionGroup (w1, 0);
 		this.AddAccelGroup (this.UIManager.AccelGroup);
 		this.Name = "MainWindow";
@@ -118,7 +126,7 @@ public partial class MainWindow
 		this.MainVerticalPane.Spacing = 6;
 		this.MainVerticalPane.BorderWidth = ((uint)(6));
 		// Container child MainVerticalPane.Gtk.Box+BoxChild
-		this.UIManager.AddUiFromString (@"<ui><menubar name='MainMenu'><menu name='FileAction' action='FileAction'><menuitem name='NewAction' action='NewAction'/><menuitem name='OpenResourceDescriptionAction' action='OpenResourceDescriptionAction'/><menuitem name='SaveResourceDescriptionAction' action='SaveResourceDescriptionAction'/></menu><menu name='PublishAction' action='PublishAction'><menuitem name='PublishCurrentDocumentAction' action='PublishCurrentDocumentAction'/><menuitem name='PublishFromFolderAction' action='PublishFromFolderAction'/><menuitem name='PublishFromCSVAction' action='PublishFromCSVAction'/></menu></menubar></ui>");
+		this.UIManager.AddUiFromString (@"<ui><menubar name='MainMenu'><menu name='FileAction' action='FileAction'><menuitem name='NewAction' action='NewAction'/><menuitem name='OpenResourceDescriptionAction' action='OpenResourceDescriptionAction'/><menuitem name='SaveResourceDescriptionAction' action='SaveResourceDescriptionAction'/></menu><menu name='PublishAction' action='PublishAction'><menuitem name='PublishCurrentDocumentAction' action='PublishCurrentDocumentAction'/><menuitem name='PublishFromCSVAction' action='PublishFromCSVAction'/></menu><menu name='HistoryAction' action='HistoryAction'><menuitem name='ViewPublishHistoryAction' action='ViewPublishHistoryAction'/></menu></menubar></ui>");
 		this.MainMenu = ((global::Gtk.MenuBar)(this.UIManager.GetWidget ("/MainMenu")));
 		this.MainMenu.Name = "MainMenu";
 		this.MainVerticalPane.Add (this.MainMenu);
@@ -731,6 +739,7 @@ public partial class MainWindow
 		this.PublishCurrentDocumentAction.Activated += new global::System.EventHandler (this.PublishDocument);
 		this.NewAction.Activated += new global::System.EventHandler (this.ResetFields);
 		this.PublishFromCSVAction.Activated += new global::System.EventHandler (this.OnPublishFromCSVActionActivated);
+		this.ViewPublishHistoryAction.Activated += new global::System.EventHandler (this.CreateHistoryWindow);
 		this.PayloadPlacementComboBox.Changed += new global::System.EventHandler (this.UpdatePayloadChooseContainer);
 		this.PayloadFileChooser.SelectionChanged += new global::System.EventHandler (this.OnPayloadFileChooserSelectionChanged);
 		this.EditPayloadButton.Clicked += new global::System.EventHandler (this.CreateEditPayloadPopup);

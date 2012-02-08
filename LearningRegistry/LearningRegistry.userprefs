@@ -1,24 +1,26 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="PublishGUI\CsvToLrWindow.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="PublishGUI\CsvToLrMapRow.cs">
     <Files>
       <File FileName="PublishGUI\Main.cs" Line="17" Column="1" />
-      <File FileName="PublishGUI\MainWindow.cs" Line="88" Column="34" />
-      <File FileName="ResourceDataDescriptionDocument.cs" Line="53" Column="27" />
+      <File FileName="PublishGUI\MainWindow.cs" Line="1" Column="1" />
+      <File FileName="ResourceDataDescriptionDocument.cs" Line="1" Column="1" />
       <File FileName="LRUtils.cs" Line="1" Column="1" />
-      <File FileName="PublishGUI\CsvToLrWindow.cs" Line="60" Column="9" />
-      <File FileName="PublishGUI\CsvToLrMapRow.cs" Line="1" Column="1" />
+      <File FileName="PublishGUI\CsvToLrWindow.cs" Line="95" Column="28" />
+      <File FileName="PublishGUI\CsvToLrMapRow.cs" Line="29" Column="4" />
       <File FileName="PublishGUI\Definitions.cs" Line="1" Column="1" />
-      <File FileName="RequiredFieldAttribute.cs" Line="23" Column="1" />
+      <File FileName="RequiredFieldAttribute.cs" Line="1" Column="1" />
       <File FileName="c:\dev\LR.Net\LearningRegistry\LRTest\TestHarvest.cs" Line="1" Column="1" />
-      <File FileName="CryptoUtils.cs" Line="61" Column="62" />
+      <File FileName="CryptoUtils.cs" Line="1" Column="1" />
       <File FileName="LRTest\TestCrypto.cs" Line="1" Column="1" />
       <File FileName="LRTest\TestClient.cs" Line="1" Column="1" />
       <File FileName="LRTest\TestUtils.cs" Line="1" Column="1" />
       <File FileName="LRClient.cs" Line="1" Column="1" />
-      <File FileName="Bencoder.cs" Line="66" Column="26" />
-      <File FileName="PublishGUI\SignatureInformationWidget.cs" Line="25" Column="27" />
-      <File FileName="PublishGUI\Helper.cs" Line="2" Column="17" />
+      <File FileName="Bencoder.cs" Line="1" Column="1" />
+      <File FileName="PublishGUI\SignatureInformationWidget.cs" Line="1" Column="1" />
+      <File FileName="PublishGUI\Helper.cs" Line="1" Column="1" />
+      <File FileName="c:\dev\LR.Net\LearningRegistry\PublishGUI\NodeInfoWidget.cs" Line="1" Column="1" />
+      <File FileName="PublishGUI\HistoryWindow.cs" Line="15" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -30,8 +32,7 @@
             <Node name="References" expanded="True" />
           </Node>
           <Node name="PublishGUI" expanded="True">
-            <Node name="UserInterface" expanded="True" />
-            <Node name="CsvToLrWindow.cs" selected="True" />
+            <Node name="CsvToLrMapRow.cs" selected="True" />
           </Node>
         </State>
       </Pad>
@@ -48,20 +49,14 @@
         </State>
       </Pad>
       <Pad Id="MonoDevelop.NUnit.TestPad">
-        <State expanded="True">
-          <Node name="LRTest" expanded="True">
-            <Node name="LRTest" expanded="True">
-              <Node name="TestCrypto" expanded="True">
-                <Node name="TestSign" selected="True" />
-              </Node>
-            </Node>
-          </Node>
-        </State>
+        <State expanded="True" selected="True" />
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="C:\dev\LR.Net\LearningRegistry\PublishGUI\CsvToLrMapRow.cs" line="31" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

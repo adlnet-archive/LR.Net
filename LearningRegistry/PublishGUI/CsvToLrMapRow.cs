@@ -29,7 +29,7 @@ public partial class CsvToLrMapRow : Gtk.Bin
 		{
 				//TODO: improve exception throwing/handling for empty columns
 				if(ColumnOptionsComboBox.Active == 0 || ColumnOptionsComboBox.Active > _options.Cast<string>().Count() - 3)
-					return null;//throw new NullReferenceException("No value was set for the column.");
+					return null;
 				return ColumnOptionsComboBox.ActiveText;
 		}
 	}

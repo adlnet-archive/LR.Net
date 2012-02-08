@@ -480,4 +480,10 @@ public partial class MainWindow: Gtk.Window
         else
             dialog.Destroy();
 	}
+
+	protected void CreateHistoryWindow (object sender, System.EventArgs e)
+	{
+		HistoryWindow hWin = new HistoryWindow();
+		hWin.ShowAll();
+	}
 }
