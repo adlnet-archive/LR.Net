@@ -34,21 +34,21 @@ namespace LearningRegistry
             public class lr_Object_complex : lr_Object
             {
                 public String id;
-                public override void serialize(IDictionary<string, object> dictionary, IDictionary<string, object> parent)
+                /*public override void serialize(IDictionary<string, object> dictionary, IDictionary<string, object> parent)
                 {
                     base.serialize(dictionary,parent);
                     parent["object"] = dictionary;
                     parent.Remove("_object");
-                }
+                }*/
             }
             public class lr_Object_simple : lr_Object
             {
                 public string value;
-                public override void serialize(IDictionary<string, object> dictionary, IDictionary<string, object> parent)
+                /*public override void serialize(IDictionary<string, object> dictionary, IDictionary<string, object> parent)
                 {
                     parent["object"] = value;
                     parent.Remove("_object");
-                }
+                }*/
             }
         }
         public class lr_Actor : lr_base
@@ -65,10 +65,10 @@ namespace LearningRegistry
             public class lr_Actor_simple : lr_Actor
             {
                 public string value;
-                public override void serialize(IDictionary<string, object> dictionary, IDictionary<string, object> parent)
+                /*public override void serialize(IDictionary<string, object> dictionary, IDictionary<string, object> parent)
                 {
                     parent["actor"] = value;
-                }
+                }*/
             } 
         }
         public class lr_Verb : lr_base
@@ -76,10 +76,10 @@ namespace LearningRegistry
             public class lr_Verb_simple : lr_Verb
             {
                 public string value;
-                public override void serialize(IDictionary<string, object> dictionary, IDictionary<string, object> parent)
+                /*public override void serialize(IDictionary<string, object> dictionary, IDictionary<string, object> parent)
                 {
                     parent["verb"] = value;
-                }
+                }*/
             }
             public class lr_Verb_complex : lr_Verb
             {

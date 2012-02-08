@@ -21,5 +21,12 @@ namespace LearningRegistry
 		{
 			public const string LR_PGP_1_0 = "LR-PGP.1.0";
 		}
+		
+		public struct SubmitterType
+		{
+			public const string Anonymous = "anonymous";
+			public const string User = "user";
+			public const string Agent = "agent";
+		}
 	}
 }
