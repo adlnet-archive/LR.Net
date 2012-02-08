@@ -336,15 +336,6 @@ public partial class CsvToLrWindow : Gtk.Window
             Dictionary<string, List<string>> data = new Dictionary<string, List<string>>();
             List<string> rawRowDataList = new List<string>();
 
-            //Add the row data by column names
-           /* for (int i = 0; i < _columns.Length; i++)
-            {
-                List<string> dataList = new List<string>();
-                csv.MoveTo(0);
-                while(csv.ReadNextRecord())
-                    dataList.Add(csv[i]);
-                data[_columns[i]] = dataList;
-            }*/
             while (csv.ReadNextRecord())
             {
                 var rowDict = new Dictionary<string, string>();
@@ -359,22 +350,6 @@ public partial class CsvToLrWindow : Gtk.Window
                 rawRowDataList.Add(serializer.Serialize(rowDict));
             }
 
-            
-
-            //Add the serialized (CSV) rows
-            /*while(csv.ReadNextRecord())
-            {
-                /*int columnIndex = 0;
-                var rowDict = new Dictionary<string, string>();
-                foreach (object item in row.ItemArray)
-                    rowDict[_columns[columnIndex++]] = Convert.ToString(item);
-                rawRowDataList.Add(serializer.Serialize(rowDict));
-                var rowDict = new Dictionary<string, string>();
-                for (int i = 0; i < csv.FieldCount; i++)
-                    rowDict[_columns[i]] = csv[i];
-
-                rawRowDataList.Add(serializer.Serialize(rowDict));
-            }*/
             _rawRowDataList = rawRowDataList;
             _rowData = data;
         }
