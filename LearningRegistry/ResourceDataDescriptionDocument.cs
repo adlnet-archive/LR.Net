@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,9 +31,15 @@ namespace LearningRegistry
 		
         public string Bencode()
         {
-            Dictionary<string, object> dictionary = new Dictionary<string, object>();
-            this.serialize(dictionary,null);
-            Bencoding.BElement bencoded = bencode(dictionary);
+            JavaScriptSerializer ser = new JavaScriptSerializer();
+			var json = ser.Serialize(this);
+			
+			// Deserialize into a dictionary and remove
+			// empty attributes
+			var jsonDict = ser.Deserialize<Dictionary<string, object>>(json);
+			removeEmptyFields(ref jsonDict);
+			
+            Bencoding.BElement bencoded = bencode(jsonDict);
             string b = bencoded.ToBencodedString();
             return b;
         }
@@ -40,6 +47,11 @@ namespace LearningRegistry
         {
             if (input == null)
                 return new Bencoding.BString("null");
+			if(input.GetType() == typeof(ArrayList))
+			{
+				Array value = ((ArrayList)input).ToArray();
+				return bencode(value);
+			}
             if(input.GetType() == typeof(Dictionary<string, object>))
             {
                 Dictionary<string, object> value = (Dictionary<string, object>)input;
@@ -77,9 +89,7 @@ namespace LearningRegistry
                 return Blist;
 
             }
-            catch (Exception e)
-            {
-            }
+            catch {}
            
 
             if (input.GetType() == typeof(string))
@@ -119,10 +129,16 @@ namespace LearningRegistry
             {
                 bdic.Add(new Bencoding.BString(f.Name),bencode(f.GetValue(input)));
             }
+			
+			if(input.GetType() == typeof(ArrayList))
+			{
+				foreach(object o in (ArrayList)input)
+					Console.WriteLine(o.ToString());
+			}
             foreach (System.Reflection.PropertyInfo f in t.GetProperties())
             {
-                System.Reflection.MethodInfo mf = f.GetGetMethod();
-                object o = mf.Invoke(input, null);
+				Console.WriteLine("Input: " + input.ToString() + "; Property: " + f.Name);
+                object o = f.GetValue(input, null);
                 bdic.Add(new Bencoding.BString(f.Name), bencode(o));
             }
             return  bdic;
@@ -163,7 +179,7 @@ namespace LearningRegistry
                         }
                     }
                 }
-                catch (System.InvalidCastException h)
+                catch (System.InvalidCastException)
                 {
                 }
 
@@ -178,7 +194,7 @@ namespace LearningRegistry
                         handled = true;
                     }
                 }
-                catch (System.InvalidCastException h)
+                catch (System.InvalidCastException)
                 {
                 }
 
@@ -196,7 +212,7 @@ namespace LearningRegistry
                         handled = true;
                     }
                 }
-                catch (System.InvalidCastException h)
+                catch (System.InvalidCastException)
                 {  
                 }
 
@@ -212,7 +228,7 @@ namespace LearningRegistry
                             handled = true;
                         }
                 }
-                catch (System.InvalidCastException h)
+                catch (System.InvalidCastException)
                 {
                 }
 
@@ -230,7 +246,7 @@ namespace LearningRegistry
                             handled = true;
                         }
                     }
-                    catch (System.InvalidCastException h)
+                    catch (System.InvalidCastException)
                     {
                     }
 
@@ -245,7 +261,7 @@ namespace LearningRegistry
                             handled = true;
                         }
                     }
-                    catch (System.InvalidCastException h)
+                    catch (System.InvalidCastException)
                     {
                     }
 
@@ -259,7 +275,7 @@ namespace LearningRegistry
                             handled = true;
                         }
                     }
-                    catch (System.InvalidCastException h)
+                    catch (System.InvalidCastException)
                     {
                     }
 
@@ -279,9 +295,7 @@ namespace LearningRegistry
                             handled = true;
                         }
                     }
-                    catch (System.InvalidCastException h)
-                    {
-                    }
+                    catch (System.InvalidCastException) {}
                 
                 if(!handled && val != null && f.Name !="extensions")    
                     dictionary.Add(f.Name, val);
@@ -294,6 +308,58 @@ namespace LearningRegistry
                         dictionary.Add(p.Key, p.Value);
                 }
         }
+		public string Serialize()
+		{
+			JavaScriptSerializer ser = new JavaScriptSerializer();
+			var json = ser.Serialize(this);
+			
+			// Deserialize into a dictionary and remove
+			// empty attributes
+			var jsonDict = ser.Deserialize<Dictionary<string, object>>(json);
+			removeEmptyFields(ref jsonDict);
+			
+			return ser.Serialize(jsonDict);
+		}
+		private void removeEmptyFields(ref Dictionary<string, object> item)
+		{
+			var keys = item.Keys.ToList();
+			foreach(string key in keys)
+			{
+				var stringObj = item[key] as string;
+				var dictObj = item[key] as Dictionary<string, object>;
+				var listObj = item[key] as System.Collections.ArrayList;
+				
+				if(item[key] == null || 
+				   (stringObj != null && String.IsNullOrEmpty(stringObj)))
+					item.Remove(key);
+				else if(dictObj != null)
+				{
+					if(dictObj.Count < 1)
+						item.Remove(key);
+					else
+						removeEmptyFields(ref dictObj);
+				} else if (listObj != null)
+				{
+					ArrayList newList = new ArrayList();
+					foreach(object li in listObj)
+					{
+						var stringLi = li as string;
+						var dictLi = li as Dictionary<string, object>;
+						if(!String.IsNullOrEmpty(stringLi))
+							newList.Add(li);
+						else if(dictLi != null)
+						{
+							removeEmptyFields(ref dictLi);
+							newList.Add(dictLi);
+						}
+					}
+					listObj = newList;
+					if(listObj.Count < 1)
+						item.Remove(key);
+				}
+				
+			}
+		}
     }
     namespace RDDD
     {
@@ -453,6 +519,7 @@ namespace LearningRegistry
         {
             public string signature;
             public List<string> key_location;
+			[RequiredField]
             public string signing_method;
 
             public lr_digital_signature()
@@ -468,15 +535,8 @@ namespace LearningRegistry
             public string owner;
             public string submitter;
             public string signer;
-            public string submitter_type;
-            public lr_identity()
-            {
-                curator = "";
-                owner = "";
-                submitter = "";
-                signer = "";
-                submitter_type = "agent";
-            }
+			[RequiredField]
+            public string submitter_type = "agent";
         }
         /*public class lr_keys : List<string>
         {
@@ -520,10 +580,8 @@ namespace LearningRegistry
             public lr_TOS()
             {
                 submission_TOS = "http://www.learningregistry.org/tos/cc0/v0-5/";
-                submission_attribution = "";
             }
         }
-		
 		
         [DataContract]
         public class lr_document : lr_base
@@ -531,66 +589,71 @@ namespace LearningRegistry
 			
           //  [DataMember]
           //  public lr_TOS TOS;
+			
+			[RequiredField(true)]
             [DataMember]
-			[ScriptIgnore]
-            public Boolean active;
+            public Boolean active = true;
+			
+			[RequiredField(true)]
             [DataMember]
-            public String doc_type;
+            public String doc_type = "resource_data";
+			
+			[RequiredField(true)]
             [DataMember]
-            public String doc_version;
+            public String doc_version = "0.23.0";
+			
+			[RequiredField]
             [DataMember]
-            public lr_identity identity;
-            [DataMember]
-            public List<string> keys;			
+            public List<string> payload_schema = new List<string>();
+			
+			[RequiredField]
 			[DataMember]
-            public String payload_placement;			
-            [DataMember]
-            public List<string> payload_schema;
-            [DataMember]
-            public Object resource_data;
-            [DataMember]
-            public String resource_data_type;
-            [DataMember]
+            public String resource_data_type = Taxonomies.ResourceDataType.Metadata;
+			
+			[RequiredField]
+			[DataMember]
             public String resource_locator;
-            [DataMember]
-            public String payload_schema_locator;
-            [DataMember]
-            public String payload_schema_format;
-            [DataMember]
-            public String payload_locator;
-			[DataMember]
-			[ScriptIgnore]
-			public String doc_ID;
 			
             [DataMember]
-            public int weight;
-
+            public lr_identity identity = new lr_identity();
+			
+            [DataMember]
+            public List<string> keys = new List<string>();		
+			
+			[RequiredField]
+			[DataMember]
+            public String payload_placement = Taxonomies.PayloadPlacement.Inline;
+			
+            [DataMember]
+            public Object resource_data;
+			
+            [DataMember]
+            public String payload_schema_locator;
+			
+            [DataMember]
+            public String payload_schema_format;
+			
+            [DataMember]
+            public String payload_locator;
+			
+			[RequiredField(true)]
+			[DataMember]
+			public String doc_ID;
+			
+			[DataMember]
+			public lr_TOS TOS = new lr_TOS();
+			
+            [DataMember]
+            public int weight = 0;
+			
             [DataMember]
             public lr_digital_signature digital_signature;
 
             [DataMember]
-            public int resource_TTL;
-            public lr_document()
-            {
-              //  TOS = new lr_TOS();
-                active = true;
-                doc_type = "resource_data";
-                doc_version = "0.23.0";
-                identity = new lr_identity();
-                keys = new List<string>();
-                payload_placement = "inline";
-                payload_schema = new List<string>();
-                resource_data = "";
-                resource_data_type = "metadata";
-                resource_locator = "";
-                payload_schema_locator = "";
-                payload_schema_format = "";
-               
-                payload_locator = "";
-                weight = 100;
-                resource_TTL = 0;
-                digital_signature = null;
-            }
+            public int resource_TTL = 0;
+			
+            public lr_document(){}
+			
             public void Sign(string passphrase, string keyID, string keyloc)
             {
  
@@ -644,21 +707,27 @@ namespace LearningRegistry
                     digital_signature.signature = sig;
                     digital_signature.signing_method = Taxonomies.SigningMethod.LR_PGP_1_0;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     try
                     {
                         System.IO.File.Delete(randomname + ".json.bencoded.asc");
                     }
-                    catch (Exception j) { }
+                    catch { }
                     try
                     {
                         System.IO.File.Delete( randomname + ".json.bencoded" );
-                     }
-                    catch (Exception j) { }
+                    }
+                    catch (Exception) { }
                    // throw e;
                 }
-            }
+            }				                                       
+			
+			public static lr_document Deserialize(string json)
+			{
+				JavaScriptSerializer ser = new JavaScriptSerializer();
+				return ser.Deserialize<lr_document>(json);
+			}
         }
         public class AcceptAllCerts : System.Net.ICertificatePolicy
         {
@@ -701,7 +770,7 @@ namespace LearningRegistry
                     doc.Sign( passphrase,  keyID,  keyloc);
                 }
             }
-            public string Serialize()
+            /*public string Serialize()
             {
 
                 //backup the resource data, then serialize it to a string
@@ -730,7 +799,7 @@ namespace LearningRegistry
                 }
                 return data;
 
-            }
+            }*/
         }
     }
 }

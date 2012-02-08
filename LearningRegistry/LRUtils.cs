@@ -18,10 +18,10 @@ namespace LearningRegistry
 		}
 		
 		private static JavaScriptSerializer _serializer = new JavaScriptSerializer();
-		public static JavaScriptSerializer GetSerializer() { return _serializer; }
+		internal static JavaScriptSerializer GetSerializer() { return _serializer; }
 
         private static UTF8Encoding _encoder = new UTF8Encoding();
-        public static UTF8Encoding GetEncoder() { return _encoder; }
+        internal static UTF8Encoding GetEncoder() { return _encoder; }
 
 		public const string ISO_8061_FORMAT = "yyyy-MM-ddThh:mm:ssZ";
 		

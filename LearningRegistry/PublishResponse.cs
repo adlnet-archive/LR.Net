@@ -9,7 +9,7 @@ namespace LearningRegistry
 		public string error;
 		public string doc_ID;
 	}
-	public class PublishResponse
+	public class PublishResponse : Result
 	{
 		public bool OK;
 		public string error;

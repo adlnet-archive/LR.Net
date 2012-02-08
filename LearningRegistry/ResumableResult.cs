@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace LearningRegistry
 {
-	public abstract class ResumableResult
+	public abstract class ResumableResult : Result
 	{
 		public string resumption_token;
 		

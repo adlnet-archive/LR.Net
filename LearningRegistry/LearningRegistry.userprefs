@@ -1,48 +1,53 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="LRTest/TestClient.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="PublishGUI\HistoryWindow.cs">
     <Files>
-      <File FileName="LRClient.cs" Line="95" Column="5" />
-      <File FileName="LRUtils.cs" Line="32" Column="17" />
-      <File FileName="Harvester.cs" Line="29" Column="11" />
-      <File FileName="LRPublishExample/Main.cs" Line="93" Column="48" />
-      <File FileName="HarvestResult.cs" Line="51" Column="78" />
-      <File FileName="ResumableResult.cs" Line="16" Column="3" />
-      <File FileName="ObtainResult.cs" Line="32" Column="53" />
-      <File FileName="LRTest/TestClient.cs" Line="60" Column="4" />
+      <File FileName="PublishGUI\Main.cs" Line="17" Column="1" />
+      <File FileName="PublishGUI\MainWindow.cs" Line="463" Column="29" />
+      <File FileName="ResourceDataDescriptionDocument.cs" Line="1" Column="1" />
+      <File FileName="LRUtils.cs" Line="1" Column="1" />
+      <File FileName="PublishGUI\CsvToLrWindow.cs" Line="343" Column="18" />
+      <File FileName="PublishGUI\CsvToLrMapRow.cs" Line="32" Column="18" />
+      <File FileName="PublishGUI\Definitions.cs" Line="1" Column="1" />
+      <File FileName="RequiredFieldAttribute.cs" Line="1" Column="1" />
+      <File FileName="c:\dev\LR.Net\LearningRegistry\LRTest\TestHarvest.cs" Line="1" Column="1" />
+      <File FileName="CryptoUtils.cs" Line="1" Column="1" />
+      <File FileName="LRTest\TestCrypto.cs" Line="1" Column="1" />
+      <File FileName="LRTest\TestClient.cs" Line="1" Column="1" />
+      <File FileName="LRTest\TestUtils.cs" Line="1" Column="1" />
+      <File FileName="LRClient.cs" Line="1" Column="1" />
+      <File FileName="Bencoder.cs" Line="1" Column="1" />
+      <File FileName="PublishGUI\SignatureInformationWidget.cs" Line="1" Column="1" />
+      <File FileName="PublishGUI\Helper.cs" Line="1" Column="1" />
+      <File FileName="c:\dev\LR.Net\LearningRegistry\PublishGUI\NodeInfoWidget.cs" Line="1" Column="1" />
+      <File FileName="PublishGUI\HistoryWindow.cs" Line="41" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="LearningRegistry" expanded="True" />
-          <Node name="LRPublishExample" expanded="True" />
           <Node name="LRTest" expanded="True">
-            <Node name="TestClient.cs" selected="True" />
+            <Node name="References" expanded="True" />
+          </Node>
+          <Node name="PublishGUI" expanded="True">
+            <Node name="HistoryWindow.cs" selected="True" />
           </Node>
         </State>
       </Pad>
       <Pad Id="ClassPad">
-        <State expanded="True" selected="True" />
+        <State expanded="True" selected="True">
+          <Node name="LearningRegistry" expanded="True" />
+          <Node name="LRTest" expanded="True" />
+        </State>
       </Pad>
       <Pad Id="MonoDevelop.Debugger.WatchPad">
         <State>
-          <Value>res.document_results</Value>
-          <Value>info.Name</Value>
-          <Value>info.GetValue(this)</Value>
-          <Value>info.GetValue(doc)</Value>
+          <Value>key</Value>
+          <Value>data</Value>
         </State>
       </Pad>
       <Pad Id="MonoDevelop.NUnit.TestPad">
-        <State expanded="True">
-          <Node name="LRTest" expanded="True">
-            <Node name="LRTest" expanded="True">
-              <Node name="TestClient" expanded="True">
-                <Node name="TestObtainByResourceLocator" selected="True" />
-              </Node>
-              <Node name="TestHarvest" expanded="True" />
-            </Node>
-          </Node>
-        </State>
+        <State expanded="True" selected="True" />
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>

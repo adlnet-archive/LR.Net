@@ -7,8 +7,8 @@ know what needs to be fixed.
 
 ## Supported Platforms
 
-This library has been successfully compiled for use with the .Net Framework 4.0 and Mono 2.10.8. It works under 
-**Windows XP/Vista/7** and **OS X**, and should also run under linux as well (currently untested).
+This library has been successfully compiled for use with the .Net Framework 4.0 and Mono >= 2.10.8. It works under 
+**Windows XP/Vista/7**, **OS X**, and most Linux distributions (tested with **Ubuntu 11.10**).
 
 ### Note
 
