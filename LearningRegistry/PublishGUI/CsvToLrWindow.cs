@@ -1,14 +1,16 @@
 using System;
 using System.Data;
-using System.Data.OleDb;
 using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
+using System.Text;
+
 using Gtk;
 using LearningRegistry;
 using LearningRegistry.RDDD;
-using System.Text;
+
+using LumenWorks.Framework.IO.Csv;
 
 
 public partial class CsvToLrWindow : Gtk.Window
@@ -88,13 +90,14 @@ public partial class CsvToLrWindow : Gtk.Window
 		//Validate the rows
 		foreach(CsvToLrMapRow row in MapRowsContainer)
 		{
-			if(row.Key.Contains("*") && 
-			   	(row.DropDownValue == null || 
-			 	(row.IsConstant && String.IsNullOrEmpty(row.ConstantValue))))
+            if (row.Key.Contains("*") && (
+			   	    (row.DropDownValue == null && !row.IsConstant) || 
+			 	    (row.IsConstant && String.IsNullOrEmpty(row.ConstantValue))
+               ))
+
 			{
 				HBox container = (HBox)row.Children[0];
 				missingFields.Add((Label)container.Children[0]);
-				valid = false;
 			}	
 		}
 		
@@ -111,8 +114,8 @@ public partial class CsvToLrWindow : Gtk.Window
 		}
 		
 		_missingFields = missingFields;
-		
-		return valid;
+
+        return _missingFields.Count == 0;
 	}
 	
 	protected void ShowMissingFields()
@@ -287,8 +290,8 @@ public partial class CsvToLrWindow : Gtk.Window
                     {
                         var rowToAdd = MapRowsContainer.Children.Cast<CsvToLrMapRow>()
                                             .Where(x =>
-                                                        x.Key.Split('.')[0] == info.Name &&
-                                                        x.Key.Split('.')[1] == subField.Name)
+                                                        x.Key.Replace("*", "").Split('.')[0] == info.Name &&
+                                                        x.Key.Replace("*", "").Split('.')[1] == subField.Name)
                                             .ToList()[0];
 
                         rowIndex++; //Used another row from subInfo, need to update the index
@@ -325,69 +328,56 @@ public partial class CsvToLrWindow : Gtk.Window
 
     private void loadFromCsv(string path)
     {
-        _table = ParseCSV(path);
-        _columns = _table.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray<string>();
-
-        var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
-        Dictionary<string, List<string>> data = new Dictionary<string, List<string>>();
-        List<string> rawRowDataList = new List<string>();
-
-        //Add the row data by column names
-        for (int i = 0; i < _columns.Length; i++)
+        using (CsvReader csv = new CsvReader(new StreamReader(path), true))
         {
-            List<string> dataList = new List<string>();
-            foreach (DataRow row in _table.Rows)
-                dataList.Add(Convert.ToString(row.ItemArray[i]));
-            data[_columns[i]] = dataList;
+            _columns = csv.GetFieldHeaders();
+
+            var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+            Dictionary<string, List<string>> data = new Dictionary<string, List<string>>();
+            List<string> rawRowDataList = new List<string>();
+
+            //Add the row data by column names
+           /* for (int i = 0; i < _columns.Length; i++)
+            {
+                List<string> dataList = new List<string>();
+                csv.MoveTo(0);
+                while(csv.ReadNextRecord())
+                    dataList.Add(csv[i]);
+                data[_columns[i]] = dataList;
+            }*/
+            while (csv.ReadNextRecord())
+            {
+                var rowDict = new Dictionary<string, string>();
+                for (int i = 0; i < csv.FieldCount; i++)
+                {
+                    if (!data.ContainsKey(_columns[i]))
+                        data[_columns[i]] = new List<string>();
+
+                    data[_columns[i]].Add(csv[i]);
+                    rowDict[_columns[i]] = csv[i];
+                }
+                rawRowDataList.Add(serializer.Serialize(rowDict));
+            }
+
+            
+
+            //Add the serialized (CSV) rows
+            /*while(csv.ReadNextRecord())
+            {
+                /*int columnIndex = 0;
+                var rowDict = new Dictionary<string, string>();
+                foreach (object item in row.ItemArray)
+                    rowDict[_columns[columnIndex++]] = Convert.ToString(item);
+                rawRowDataList.Add(serializer.Serialize(rowDict));
+                var rowDict = new Dictionary<string, string>();
+                for (int i = 0; i < csv.FieldCount; i++)
+                    rowDict[_columns[i]] = csv[i];
+
+                rawRowDataList.Add(serializer.Serialize(rowDict));
+            }*/
+            _rawRowDataList = rawRowDataList;
+            _rowData = data;
         }
-
-        //Add the serialized (CSV) rows
-        foreach (DataRow row in _table.Rows)
-        {
-            int columnIndex = 0;
-            var rowDict = new Dictionary<string, string>();
-            foreach (object item in row.ItemArray)
-                rowDict[_columns[columnIndex++]] = Convert.ToString(item);
-            rawRowDataList.Add(serializer.Serialize(rowDict));
-        }
-        _rawRowDataList = rawRowDataList;
-        _rowData = data;
-    }
-
-    private static DataTable ParseCSV(string path)
-    {
-        if (!File.Exists(path))
-            return null;
-
-        string full = System.IO.Path.GetFullPath(path);
-        string file = System.IO.Path.GetFileName(full);
-        string dir = System.IO.Path.GetDirectoryName(full);
-
-        //create the "database" connection string
-        string connString = "Provider=Microsoft.Jet.OLEDB.4.0;"
-          + "Data Source=\"" + dir + "\\\";"
-          + "Extended Properties=\"text;HDR=Yes;FMT=Delimited\"";
-
-        //create the database query
-        string query = "SELECT * FROM " + file;
-
-        //create a DataTable to hold the query results
-        DataTable dTable = new DataTable();
-
-        //create an OleDbDataAdapter to execute the query
-        OleDbDataAdapter dAdapter = new OleDbDataAdapter(query, connString);
-
-        try
-        {
-            //fill the DataTable
-            dAdapter.Fill(dTable);
-        }
-        catch (InvalidOperationException /*e*/)
-        { }
-
-        dAdapter.Dispose();
-
-        return dTable;
     }
 	
 }
