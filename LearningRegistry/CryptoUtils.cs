@@ -22,11 +22,13 @@ namespace LearningRegistry
 		private List<string> _publicKeyLocation;
 		private string _privateKey;
 		private string _passPhrase;
+        private string _userId;
 		
-		public PgpSigner (IEnumerable<string> publicKeyLocation, string privateKey, string passPhrase)
+		public PgpSigner (IEnumerable<string> publicKeyLocation, string privateKey, string userId, string passPhrase)
 		{
 			_publicKeyLocation = publicKeyLocation.ToList();
 			_privateKey = privateKey;
+            _userId = userId;
 			_passPhrase = passPhrase;
 		}
 		
@@ -154,8 +156,15 @@ namespace LearningRegistry
 			{
 				foreach(PgpSecretKey key in keyRing.GetSecretKeys())
 				{
-					if( key.IsSigningKey )
-						return key;
+                    if (key.UserIds.Cast<String>().Where(id => id == _userId).Count() > 0)
+                    {
+                        try
+                        {
+                            key.ExtractPrivateKey(_passPhrase.ToCharArray());
+                            return key;
+                        }
+                        catch { continue; }
+                    }
 				}
 			}
 			
