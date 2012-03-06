@@ -5,6 +5,8 @@ using System.Net;
 using System.IO;
 using System.Text;
 using System.Web.Script.Serialization;
+using System.Security.Cryptography.X509Certificates;
+using System.Net.Security;
 
 namespace LearningRegistry
 {
@@ -16,7 +18,16 @@ namespace LearningRegistry
 	
 	public class LRClient
 	{
-		
+        public static bool AcceptAllCertificates(
+                 object sender,
+                 X509Certificate certificate,
+                 X509Chain chain,
+                 SslPolicyErrors policyErrors)
+        {
+            return true;
+        }
+        
+
 		private Uri _baseUri;
 		public Uri BaseUri
 		{ 
@@ -40,12 +51,24 @@ namespace LearningRegistry
 		{
 			get { return _harvester; }
 		}
+
+        private RemoteCertificateValidationCallback _sslValidationCallback;
+        public RemoteCertificateValidationCallback SslValidationCallback
+        {
+            get { return _sslValidationCallback; }
+            set
+            {
+                _sslValidationCallback = value;
+                ServicePointManager.ServerCertificateValidationCallback = _sslValidationCallback;
+            }
+        }
 		
 		public LRClient()
 		{
 			_serializer = LRUtils.GetSerializer();
             _encoder = LRUtils.GetEncoder();
 			_harvester = new Harvester();
+            SslValidationCallback = AcceptAllCertificates;
 		}
 		
 		public LRClient(string baseUri)
@@ -56,6 +79,7 @@ namespace LearningRegistry
 			_harvester = new Harvester(_baseUri);
             Username = "";
             Password = "";
+            SslValidationCallback = AcceptAllCertificates;
 		}
 
         public LRClient(string baseUri, string username, string password)
@@ -66,6 +90,7 @@ namespace LearningRegistry
             _harvester = new Harvester(_baseUri);
             Username = username;
             Password = password;
+            SslValidationCallback = AcceptAllCertificates;
         }
 
         public PublishResponse Publish(lr_Envelope docs)

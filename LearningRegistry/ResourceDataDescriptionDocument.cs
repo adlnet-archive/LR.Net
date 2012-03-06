@@ -721,26 +721,15 @@ namespace LearningRegistry
                     catch (Exception) { }
                    // throw e;
                 }
-            }				                                       
-			
-			public static lr_document Deserialize(string json)
-			{
-				JavaScriptSerializer ser = new JavaScriptSerializer();
-				return ser.Deserialize<lr_document>(json);
-			}
-        }
-        public class AcceptAllCerts : System.Net.ICertificatePolicy
-        {
-            public bool CheckValidationResult(
-    System.Net.ServicePoint srvPoint,
-    System.Security.Cryptography.X509Certificates.X509Certificate certificate,
-    System.Net.WebRequest request,
-    int certificateProblem
-)
+            }
+
+            public static lr_document Deserialize(string json)
             {
-                return true;
+                JavaScriptSerializer ser = new JavaScriptSerializer();
+                return ser.Deserialize<lr_document>(json);
             }
         }
+        
         [DataContract]
         public class lr_Envelope:lr_base
         {
